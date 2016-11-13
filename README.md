@@ -51,8 +51,7 @@ From the build directory configure the Kernel your are going to build using one 
 ```
 make menuconfig
 ```
-
-
+![configure kernel](https://github.com/wangchenghku/Remus/blob/master/.resources/config%20kernel.png)
 
 #### Build
 
