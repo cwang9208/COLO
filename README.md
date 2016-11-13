@@ -111,20 +111,20 @@ Second, you need to acquire a suitable kernel for use in domain 0.
 [NB. Unless noted otherwise, all the following steps should be performed with root privileges.]
 
 1. Download and untar the source tarball file. This will be a file named xen-unstable-src.tgz, or xen-$version-src.tgz. You can also pull the current version from the git or mercurial repositories at http://xenbits.xen.org/
-```
-tar xzf xen-unstable-src.tgz
-```
-Assuming you are using the unstable tree, this will untar into xen-unstable. The rest of the instructions use the unstable tree as an example, substitute the version for unstable.
+  ```
+  tar xzf xen-unstable-src.tgz
+  ```
+  Assuming you are using the unstable tree, this will untar into xen-unstable. The rest of the instructions use the unstable tree as an example, substitute the version for unstable.
 
 2. cd to xen-unstable (or whatever you sensibly rename it to).
 
 3. For the very first build, or if you want to destroy build trees, perform the following steps:
-```
-# if behind proxy, then enablt git over http for xen configure file.
-./configure --enable-githttp
-make world
-make install
-```
+  ```
+  # if behind proxy, then enablt git over http for xen configure file.
+  ./configure --enable-githttp
+  make world
+  make install
+  ```
 See the documentation in the INSTALL file for more info.
 
 This will create and install onto the local machine. It will build the xen binary (xen.gz), the tools and the documentation.
