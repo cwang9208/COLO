@@ -47,6 +47,7 @@ source ~/.bashrc
 
 ### Builing the Linux Kernel
 
+#### Configure 
 From the build directory configure the Kernel your are going to build using one of:
 ```
 make menuconfig
@@ -55,7 +56,7 @@ make menuconfig
 
 #### Build
 
-From the build direction do make.
+From the build direction do `make`.
 ```
 make
 ``` 
