@@ -125,6 +125,6 @@ Second, you need to acquire a suitable kernel for use in domain 0.
   make world
   make install
   ```
-See the documentation in the INSTALL file for more info.
+  See the documentation in the INSTALL file for more info.
 
-This will create and install onto the local machine. It will build the xen binary (xen.gz), the tools and the documentation.
+  This will create and install onto the local machine. It will build the xen binary (xen.gz), the tools and the documentation.
