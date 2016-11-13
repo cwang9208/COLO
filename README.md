@@ -76,36 +76,35 @@ The `make install` command also executes a `update-grub` command which will make
 
 ### Install Xen
 
-First, there are a number of prerequisites for building a Xen source release. Make sure you have all the following installed, either by
-visiting the project webpage or installing a pre-built package provided by your OS distributor:
-    * GCC v4.1 or later
-    * GNU Make
-    * GNU Binutils
-    * Development install of zlib (e.g., zlib-dev)
-    * Development install of Python v2.3 or later (e.g., python-dev)
-    * Development install of curses (e.g., libncurses-dev)
-    * Development install of openssl (e.g., openssl-dev)
-    * Development install of x11 (e.g. xorg-x11-dev)
-    * Development install of uuid (e.g. uuid-dev)
-    * Development install of yajl (e.g. libyajl-dev)
-    * Development install of libaio (e.g. libaio-dev) version 0.3.107 or greater.
-    * Development install of GLib v2.0 (e.g. libglib2.0-dev)
-    * Development install of Pixman (e.g. libpixman-1-dev)
-    * pkg-config
-    * bridge-utils package (/sbin/brctl)
-    * iproute package (/sbin/ip)
-    * GNU bison and GNU flex
-    * GNU gettext
-    * 16-bit x86 assembler, loader and compiler (dev86 rpm or bin86 & bcc debs)
-    * ACPI ASL compiler (iasl)
+First, there are a number of prerequisites for building a Xen source release. Make sure you have all the following installed, either by visiting the project webpage or installing a pre-built package provided by your OS distributor:
+* GCC v4.1 or later
+* GNU Make
+* GNU Binutils
+* Development install of zlib (e.g., zlib-dev)
+* Development install of Python v2.3 or later (e.g., python-dev)
+* Development install of curses (e.g., libncurses-dev)
+* Development install of openssl (e.g., openssl-dev)
+* Development install of x11 (e.g. xorg-x11-dev)
+* Development install of uuid (e.g. uuid-dev)
+* Development install of yajl (e.g. libyajl-dev)
+* Development install of libaio (e.g. libaio-dev) version 0.3.107 or greater.
+* Development install of GLib v2.0 (e.g. libglib2.0-dev)
+* Development install of Pixman (e.g. libpixman-1-dev)
+* pkg-config
+* bridge-utils package (/sbin/brctl)
+* iproute package (/sbin/ip)
+* GNU bison and GNU flex
+* GNU gettext
+* 16-bit x86 assembler, loader and compiler (dev86 rpm or bin86 & bcc debs)
+* ACPI ASL compiler (iasl)
 
 In addition to the above there are a number of optional build prerequisites. Omitting these will cause the related features to be disabled at compile time:
-    * Development install of Ocaml (e.g. ocaml-nox and ocaml-findlib). Required to build ocaml components which includes the alternative ocaml xenstored.
-    * cmake (if building vtpm stub domains)
-    * markdown
-    * figlet (for generating the traditional Xen start of day banner)
-    * systemd daemon development files
-    * Development install of libnl3 (e.g., libnl-3-200, libnl-3-dev, etc).  Required if network buffering is desired when using Remus with libxl. See docs /README.remus for detailed information.
+* Development install of Ocaml (e.g. ocaml-nox and ocaml-findlib). Required to build ocaml components which includes the alternative ocaml xenstored.
+* cmake (if building vtpm stub domains)
+* markdown
+* figlet (for generating the traditional Xen start of day banner)
+* systemd daemon development files
+* Development install of libnl3 (e.g., libnl-3-200, libnl-3-dev, etc).  Required if network buffering is desired when using Remus with libxl. See docs /README.remus for detailed information.
 
 Second, you need to acquire a suitable kernel for use in domain 0.
 
