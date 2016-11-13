@@ -56,7 +56,7 @@ make menuconfig
 
 #### Build
 
-From the build direction do `make`.
+Now compile the Kernel using:
 ```
 make
 ``` 
