@@ -380,5 +380,5 @@ xm destroy ubuntu-hvm
 ```
 Then change the boot line in the config file to read boot="c"' restart the domain with
 ```
-xm create ubuntu-hvm.cfg
+xm create /etc/xen/ubuntu-hvm.cfg
 ```
