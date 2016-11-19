@@ -62,23 +62,28 @@ make install
 ```
 The `make install` command also executes a `update-grub` command which will make the grub aware of the new kernel image available.
 
-Building and Installation
+## Install e1000e Linux Base Driver
+Driver information can be obtained using ethtool, lspci, and ifconfig.
 ![lspci](https://github.com/wangchenghku/Remus/blob/master/.resources/lspic.png)
 
 1. Move the base driver tar file to the directory of your choice. For example, use '/home/username/e1000e' or '/usr/local/src/e1000e'.
 
 2. Untar/unzip the archive, where <x.x.x> is the version number for the driver tar file:
+   ```
    tar zxf e1000e-<x.x.x>.tar.gz
+   ```
 
 3. Change to the driver src directory, where <x.x.x> is the version number for the driver tar:
+   ```
    cd e1000e-<x.x.x>/src/
+   ```
 
 4. Compile the driver module:
    ```
    make install
    ```
    The binary will be installed as:
-   /lib/modules/<KERNEL VERSION>/updates/drivers/net/ethernet/intel/e1000e/e1000e.ko
+   `/lib/modules/<KERNEL VERSION>/updates/drivers/net/ethernet/intel/e1000e/e1000e.ko`
 
    The install location listed above is the default location. This may differ for various Linux distributions.
 
@@ -175,7 +180,7 @@ update-rc.d xendomains defaults 21 20
 reboot
 ```
 
-##Install DRBD
+## Install DRBD
 Server #1
 ```
 apt-get install autoconf build-essential
@@ -247,7 +252,7 @@ cat /proc/drbd
 ```
 
 
-##Test VM with Remus
+## Test VM with Remus
 Server #1
 ```
 mkdir -p /var/lib/xen/images/ubuntu-netboot
