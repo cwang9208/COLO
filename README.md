@@ -267,18 +267,13 @@ resource drbd-vm {
 drbdadm create-md drbd-vm
 ###answer y or yes for all questions, in the above command
 drbdadm up drbd-vm
-
-###Sanity check. You should see something like this in the output
 ```
+From /proc/drbd you can monitor the current status of the DRBD resource.
+![drbd](https://github.com/wangchenghku/Remus/blob/master/.resources/drbd.png)
 
 Server #1 - this will override all of the DRBD data on server #2
 ```
 drbdadm -- --overwrite-data-of-peer primary drbd-vm
-```
-
-Watch the progress of the transfer (either server)
-```
-cat /proc/drbd
 ```
 
 ### Setup Remus
