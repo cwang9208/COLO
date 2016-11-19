@@ -1,6 +1,6 @@
-# Install Xen with Remus and DRBD on Ubuntu 14.04
+# Install Xen with Remus and DRBD on Ubuntu 12.10
 
-## Install a new Ubuntu 14.04 system
+## Install a new Ubuntu 12.10 system
 
 ### Setting up apt-get to use a http-proxy
 If you are behind a proxy server you have probably to set this commands to pass through.
