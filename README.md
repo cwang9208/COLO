@@ -118,6 +118,7 @@ cd /usr/src
 hg clone -r RELEASE-4.1.2 http://xenbits.xen.org/xen-4.1-testing.hg xen-4.1.2
 ```
 Apply the following set of patches:
+
 1. 01_remus_compression.patch - adds checkpoint compression functionality (also available in upstream xen i.e xen unstable)
 2. 02_persistent_bitmap.patch - creates a permanent mapping of the PV guest in xc_domain_save, instead of mapping/unmapping in batches of 4MB. This patch will have no effect on HVMs.
 3. 03_config_fixups.patch
