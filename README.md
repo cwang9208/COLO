@@ -29,21 +29,37 @@ vi /etc/hosts
 ```
 
 ## Builing the Linux Kernel
-#### Sources
+### Sources
 ```
 git clone git://git.kernel.org/pub/scm/linux/kernel/git/jeremy/xen.git linux-2.6-xen
 cd linux-2.6-xen
 git checkout -b xen/next-2.6.32 origin/xen/next-2.6.32
 ```
 
-#### Configure 
+### Configure 
 From the build directory configure the Kernel your are going to build using one of:
 ```
 make menuconfig
 ```
-![configure kernel](https://github.com/wangchenghku/Remus/blob/master/.resources/config%20kernel.png)
+You need to enable:
+* CONFIG_X86_IO_APIC=y
+* CONFIG_ACPI=y
+* CONFIG_XEN_DOM0=y
+* CONFIG_PCI_XEN=y
+* CONFIG_XEN_DEV_EVTCHN=y
+* CONFIG_XENFS=y
+* CONFIG_XEN_COMPAT_XENFS=y
+* CONFIG_XEN_SYS_HYPERVISOR=y
+* CONFIG_XEN_GNTDEV=y
+* CONFIG_XEN_BACKEND=y
+* CONFIG_XEN_NETDEV_BACKEND=m
+* CONFIG_XEN_BLKDEV_BACKEND=m
+* CONFIG_XEN_PCIDEV_BACKEND=m
+* CONFIG_XEN_PRIVILEGED_GUEST=y
+* CONFIG_XEN_BALLOON=y
+* CONFIG_XEN_SCRUB_PAGES=y
 
-#### Build
+### Build
 
 Now compile the Kernel using:
 ```
@@ -51,7 +67,7 @@ make
 ``` 
 Now two things will happen. The kernel will be built, and the modules will be built.
 
-#### Installation
+### Installation
 Install the Kernel Modules
 ```
 make modules_install
@@ -62,7 +78,19 @@ make install
 ```
 The `make install` command also executes a `update-grub` command which will make the grub aware of the new kernel image available.
 
-## Install e1000e Linux Base Driver
+### Update modules
+For older Xen versions you may need to do this yourself by adding the modules to the relevant configuration file. Under Debian and Ubuntu style systems this is /etc/modules.  
+The following modules may be required:
+```
+xen-evtchn
+xen-gntdev
+xen-netback
+xen-blkback
+xenfs
+blktap
+```
+
+### Install e1000e Linux Base Driver
 Driver information can be obtained using ethtool, lspci, and ifconfig.
 ![lspci](https://github.com/wangchenghku/Remus/blob/master/.resources/lspic.png)
 
