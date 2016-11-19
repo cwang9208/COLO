@@ -355,7 +355,7 @@ pkill -USR1 remus
 ### Manually installing an HVM Guest VM
 
 ```
-sudo lvcreate -L 4G -n ubuntu-hvm /dev/<VG>
+sudo lvcreate -L 4G -n ubuntu-hvm /dev/ubuntu
 ```
 Create a guest config file /etc/xen/ubuntu-hvm.cfg
 ```
@@ -364,7 +364,7 @@ name = "ubuntu-hvm"
 memory = "512"
 vcpus = 1
 vif = ['mac=18:66:da:03:15:b1,bridge=xenbr0']
-disk = ['phy:/dev/<VG>/ubuntu-hvm,hda,w','file:/home/cheng/ubuntu-12.04-desktop-amd64.iso,hdc:cdrom,r']
+disk = ['phy:/dev/ubuntu/ubuntu-hvm,hda,w','file:/home/cheng/ubuntu-12.04-desktop-amd64.iso,hdc:cdrom,r']
 vnc = 1
 boot="dc"
 ```
