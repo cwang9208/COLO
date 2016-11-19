@@ -198,6 +198,7 @@ make install-tools
 
 update-grub2
 ```
+![patch](https://github.com/wangchenghku/Remus/blob/master/.resources/patch.png)
 
 Fix init.d scripts to start xend daemon on boot
 ```
@@ -279,8 +280,31 @@ Watch the progress of the transfer (either server)
 cat /proc/drbd
 ```
 
+### Setup Remus
+Both servers
+```
+vi /etc/xen/xend-config.sxp
+# Ensure the following are uncommented
+(xend-relocation-server yes)
+(xend-relocation-port 8002)
+(xend-relocation-address '')
+(xend-relocation-hosts-allow '')
+#
 
-## Test VM with Remus
+vi /etc/modules
+#
+sch_plug
+sch_prio
+sch_ingress
+cls_basic
+cls_tcindex
+cls_u32
+act_mirred
+ifb
+#
+```
+
+### Test VM with Remus (PV Guest)
 Server #1
 ```
 mkdir -p /var/lib/xen/images/ubuntu-netboot
@@ -295,7 +319,7 @@ name = "SystemHA"
 memory = 256
 
 disk = [ 'drbd:drbd-vm,xvda,w' ]
-vif = [' mac=18:66:da:03:15:b1,bridge=xenbr0' ]
+vif = [ 'mac=18:66:da:03:15:b1,bridge=xenbr0' ]
 
 kernel = "/var/lib/xen/images/ubuntu-netboot/vmlinuz"
 ramdisk = "/var/lib/xen/images/ubuntu-netboot/initrd.gz"
@@ -325,4 +349,35 @@ remus -i 40 --blackhole --no-net SystemHA dummyHost >/var/log/xen/domU-blackhole
 The VM SystemHA is continuously checkpointed but replicated to /dev/null. Gather up all the stats you want and then kill remus
 ```
 pkill -USR1 remus
+```
+
+### Manually installing an HVM Guest VM
+
+```
+sudo lvcreate -L 4G -n ubuntu-hvm /dev/<VG>
+```
+Create a guest config file /etc/xen/ubuntu-hvm.cfg
+```
+builder = "hvm"
+name = "ubuntu-hvm"
+memory = "512"
+vcpus = 1
+vif = ['mac=18:66:da:03:15:b1,bridge=xenbr0']
+disk = ['phy:/dev/<VG>/ubuntu-hvm,hda,w','file:/home/cheng/ubuntu-12.04-desktop-amd64.iso,hdc:cdrom,r']
+vnc = 1
+boot="dc"
+```
+
+```
+xm create /etc/xen/ubuntu-hvm.cfg
+vncviewer localhost:0 
+```
+
+Once you have installed by formatting the disk and by following the prompts the domain will restart - however this time we want to prevent it booting from DVD so destroy the domain with
+```
+xm destroy ubuntu-hvm
+```
+Then change the boot line in the config file to read boot="c"' restart the domain with
+```
+xm create ubuntu-hvm.cfg
 ```
