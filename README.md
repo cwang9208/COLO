@@ -351,10 +351,10 @@ pkill -USR1 remus
 ```
 sudo lvcreate -L 4G -n ubuntu-hvm /dev/ubuntu
 ```
-Create a guest config file /etc/xen/ubuntu-hvm.cfg
+Create a guest config file /etc/xen/ubuntu.cfg
 ```
 builder = "hvm"
-name = "ubuntu-hvm"
+name = "ubuntu"
 memory = "512"
 vcpus = 1
 vif = ['mac=18:66:da:03:15:b1,bridge=xenbr0']
@@ -364,15 +364,15 @@ boot="dc"
 ```
 
 ```
-xm create /etc/xen/ubuntu-hvm.cfg
+xm create /etc/xen/ubuntu.cfg
 vncviewer localhost:0 
 ```
 
 Once you have installed by formatting the disk and by following the prompts the domain will restart - however this time we want to prevent it booting from DVD so destroy the domain with
 ```
-xm destroy ubuntu-hvm
+xm destroy ubuntu
 ```
 Then change the boot line in the config file to read boot="c"' restart the domain with
 ```
-xm create /etc/xen/ubuntu-hvm.cfg
+xm create /etc/xen/ubuntu.cfg
 ```
