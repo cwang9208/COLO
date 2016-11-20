@@ -100,7 +100,7 @@ Driver information can be obtained using `ethtool`, `lspci`, and `ifconfig`.
 
    The install location listed above is the default location. This may differ for various Linux distributions.
 
-5. Load the module using the modprobe command:
+5. Load the module using the `modprobe` command:
    ```
    modprobe <e1000e> [parameter=port1_value,port2_value]
    ```
