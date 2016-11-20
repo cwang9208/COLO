@@ -1,51 +1,38 @@
 # Install Xen with Remus and DRBD on Ubuntu 12.10
 
 ## Install a new Ubuntu 12.10 system
-
-### Setting up apt-get to use a http-proxy
-If you are behind a proxy server you have probably to set this commands to pass through.
-
-#### Temporary proxy session
-This is a temporary method that you can manually use each time you want to use apt-get through a http-proxy. This method is useful if you only want to temporarily use a http-proxy.
-Enter this line in the terminal prior to using apt-get
-
+Both Servers 
 ```
-export http_proxy=http://10.22.1.1:3128
+Choose 'Use entire disk with LVM'
 ```
 
-#### APT configuration file method
-This method uses the apt.conf file which is found in your /etc/apt/ directory. This method is useful if you only want apt-get (and not other applications) to use a http-proxy permanently.
-On some installations there will be no apt-conf file set up. This procedure will either edit an existing apt-conf file or create a new apt-conf file.
+Network setup
 ```
-gksudo gedit /etc/apt/apt.conf
+sudo apt-get install bridge-utils
+sudo vi /etc/network/interfaces
+#
+auto xenbr0
+iface xenbr0 inet dhcp
+bridge_ports eth0
+
+auto eth0
+iface eth0 inet manual
+#
 ```
 
-Add this line to your /etc/apt/apt.conf file.
+vi /etc/hosts
+#
+147.8.177.50 cheng-HP-Compaq-Elite-8300-SFF
+147.8.179.243 wang-HP-Compaq-Elite-8300-SFF
+#
 
+## Builing the Linux Kernel
+#### Download
 ```
-Acquire::http::Proxy "http://10.22.1.1:3128";
+git clone git://git.kernel.org/pub/scm/linux/kernel/git/jeremy/xen.git linux-2.6-xen
+cd linux-2.6-xen
+git checkout -b xen/next-2.6.32 origin/xen/next-2.6.32
 ```
-
-Save the apt.conf file.
-
-#### BASH rc method
-This method adds a two lines to your .bashrc file in your $HOME directory. This method is useful if you would like apt-get and other applications for instance wget, to use a http-proxy.
-```
-gedit ~/.bashrc
-```
-
-Add these lines to the bottom of your ~/.bashrc file
-```
-http_proxy=http://10.22.1.1:3128
-export http_proxy
-```
-
-Save the file. Close your terminal window and then open another terminal window or source the ~/.bashrc file:
-```
-source ~/.bashrc
-```
-
-### Builing the Linux Kernel
 
 #### Configure 
 From the build directory configure the Kernel your are going to build using one of:
@@ -71,13 +58,36 @@ Install the new Kernel onto the system using:
 ```
 make install
 ```
-
 The `make install` command also executes a `update-grub` command which will make the grub aware of the new kernel image available.
 
-### Install Xen
+Building and Installation
+![lspci](https://github.com/wangchenghku/Remus/blob/master/.resources/lspic.png)
 
-First, there are a number of prerequisites for building a Xen source release. Make sure you have all the following installed, either by visiting the project webpage or installing a pre-built package provided by your OS distributor:
-* GCC v4.1 or later
+1. Move the base driver tar file to the directory of your choice. For example, use '/home/username/e1000e' or '/usr/local/src/e1000e'.
+
+2. Untar/unzip the archive, where <x.x.x> is the version number for the driver tar file:
+   tar zxf e1000e-<x.x.x>.tar.gz
+
+3. Change to the driver src directory, where <x.x.x> is the version number for the driver tar:
+   cd e1000e-<x.x.x>/src/
+
+4. Compile the driver module:
+   # make install
+   The binary will be installed as:
+   /lib/modules/<KERNEL VERSION>/updates/drivers/net/ethernet/intel/e1000e/e1000e.ko
+
+   The install location listed above is the default location. This may differ for various Linux distributions.
+
+5. Load the module using the modprobe command:
+   modprobe <e1000e> [parameter=port1_value,port2_value]
+
+   Make sure that any older e1000e drivers are removed from the kernel before loading the new module:
+   rmmod e1000e; modprobe e1000e
+
+## Install Xen
+
+There are a number of prerequisites for building a Xen source release. Make sure you have all the following installed, either by visiting the project webpage or installing a pre-built package provided by your OS distributor:
+* GCC v3.4 or later
 * GNU Make
 * GNU Binutils
 * Development install of zlib (e.g., zlib-dev)
@@ -86,45 +96,143 @@ First, there are a number of prerequisites for building a Xen source release. Ma
 * Development install of openssl (e.g., openssl-dev)
 * Development install of x11 (e.g. xorg-x11-dev)
 * Development install of uuid (e.g. uuid-dev)
-* Development install of yajl (e.g. libyajl-dev)
-* Development install of libaio (e.g. libaio-dev) version 0.3.107 or greater.
-* Development install of GLib v2.0 (e.g. libglib2.0-dev)
-* Development install of Pixman (e.g. libpixman-1-dev)
-* pkg-config
 * bridge-utils package (/sbin/brctl)
 * iproute package (/sbin/ip)
+* hotplug or udev
 * GNU bison and GNU flex
 * GNU gettext
 * 16-bit x86 assembler, loader and compiler (dev86 rpm or bin86 & bcc debs)
 * ACPI ASL compiler (iasl)
 
-In addition to the above there are a number of optional build prerequisites. Omitting these will cause the related features to be disabled at compile time:
-* Development install of Ocaml (e.g. ocaml-nox and ocaml-findlib). Required to build ocaml components which includes the alternative ocaml xenstored.
-* cmake (if building vtpm stub domains)
-* markdown
-* figlet (for generating the traditional Xen start of day banner)
-* systemd daemon development files
-* Development install of libnl3 (e.g., libnl-3-200, libnl-3-dev, etc).  Required if network buffering is desired when using Remus with libxl. See docs /README.remus for detailed information.
+Make sure that "hgext.mq=" is uncommented in /etc/mercurial/hgrc.d/hgext.rc
+```
+cd /usr/src
+hg clone -r RELEASE-4.1.2 http://xenbits.xen.org/xen-4.1-testing.hg xen-4.1.2
+```
+Apply the following set of patches:
+1. 01_remus_compression.patch - adds checkpoint compression functionality (also available in upstream xen i.e xen unstable)
+2. 02_persistent_bitmap.patch - creates a permanent mapping of the PV guest in xc_domain_save, instead of mapping/unmapping in batches of 4MB. This patch will have no effect on HVMs.
+3. 03_config_fixups.patch
+4. 04_stats_fix.patch - pretty printing of remus checkpoint stats for post processing and analysis
+5. 05_timeouts.patch - increases the failure detection timeout. Once your installation is stable, please adjust the timeout values in this patch according to your needs.
+6. 06_qdisc_3.4_fix.patch - This patch enables support for sch_plug modules when using 3.4+ dom0 kernels.
 
-Second, you need to acquire a suitable kernel for use in domain 0.
+```
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/01_remus_compression.patch -O /tmp/01_remus_compression.patch
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/02_persistent_bitmap.patch -O /tmp/02_persistent_bitmap.patch
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/03_config_fixups.patch -O /tmp/03_config_fixups.patch
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/04_stats_fix.patch -O /tmp/04_stats_fix.patch
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/05_timeouts.patch -O /tmp/05_timeouts.patch
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/06_qdisc_3.4_fix.patch -O /tmp/06_qdisc_3.4_fix.patch
 
-[NB. Unless noted otherwise, all the following steps should be performed with root privileges.]
+###NOTE: Make sure "hgext.mq=" line is uncommented in /etc/mercurial/hgrc.d/hgext.rc else the following commands wont work.
+cd /usr/src/xen-4.1.2
+hg qinit
+hg qimport /tmp/01_remus_compression.patch
+hg qpush
+hg qimport /tmp/02_persistent_bitmap.patch
+hg qpush
+hg qimport /tmp/03_config_fixups.patch
+hg qpush
+hg qimport /tmp/04_stats_fix.patch
+hg qpush
+hg qimport /tmp/05_timeouts.patch
+hg qpush
+hg qimport /tmp/06_qdisc_3.4_fix.patch
+hg qpush
 
-1. Download and untar the source tarball file. This will be a file named xen-unstable-src.tgz, or xen-$version-src.tgz. You can also pull the current version from the git or mercurial repositories at http://xenbits.xen.org/
-  ```
-  tar xzf xen-unstable-src.tgz
-  ```
-  Assuming you are using the unstable tree, this will untar into xen-unstable. The rest of the instructions use the unstable tree as an example, substitute the version for unstable.
+make clean
+make install-xen
+make tools
+```
 
-2. cd to xen-unstable (or whatever you sensibly rename it to).
+Once you have done "make tools", you should be having a tools/ioemu-remote directory that contains the qemu device model code, to be used for HVM domUs. The qemu device model code currently does not handle drbd disk backed HVM domUs properly. Apply the following patch drbd-hvm-fix. 
+```
+cd /usr/src/xen-4.1.2/tools/qemu-xen-traditional-dir-remote
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/drbd-hvm-fix
+patch -p1 <drbd-hvm-fix
+cd /usr/src/xen-4.1.2
+make install-tools
 
-3. For the very first build, or if you want to destroy build trees, perform the following steps:
-  ```
-  # if behind proxy, then enablt git over http for xen configure file.
-  ./configure --enable-githttp
-  make world
-  make install
-  ```
-  See the documentation in the INSTALL file for more info.
+update-grub2
+```
 
-  This will create and install onto the local machine. It will build the xen binary (xen.gz), the tools and the documentation.
+Fix init.d scripts to start xend daemon on boot
+```
+update-rc.d xencommons defaults 19 18
+update-rc.d xend defaults 20 21
+update-rc.d xendomains defaults 21 20
+
+reboot
+```
+
+##Install DRBD
+Server #1
+```
+apt-get install autoconf build-essential
+wget http://remusha.wikidot.com/local--files/configuring-and-installing-remus/drbd-8.3.11-remus.tar.gz
+cd ./drbd-8.3.11
+./autogen.sh
+./configure --prefix=/usr --localstatedir=/var --sysconfdir=/etc --with-km
+make
+make install
+cd drbd
+make clean all
+make install
+vi /etc/modules
+# add drbd
+#
+tar zcvf drbd.tgz ./drbd-8.3.11
+# scp to the other machine
+```
+
+Server #2
+```
+tar zxvf ./drbd.tgz
+cd ./drbd-8.3.11
+make install
+cd drbd
+make install
+vi /etc/modules
+# add drbd
+#
+```
+
+Both Servers
+```
+![lvreduce](https://github.com/wangchenghku/Remus/blob/master/.resources/lvreduce.png)
+cp /home/user/drbd-8.3.11/scripts/global_common.conf.protoD /etc/drbd.d/global_common.conf
+cp /home/user/drbd-8.3.11/scripts/testvms_protoD.res /etc/drbd.d/SystemHA_protoD.res
+lvcreate -n drbdtest -L 10G ubuntu
+vi /etc/drbd.d/SystemHA_protoD.res
+#
+resource drbd-vm {
+        device /dev/drbd1;
+        disk /dev/ubuntu/drbdtest;
+        meta-disk internal;
+        on cheng-HP-Compaq-Elite-8300-SFF {
+                address 147.8.177.50:7791;
+        }
+        on wang-HP-Compaq-Elite-8300-SFF {
+                address 147.8.179.243:7791;
+        }
+}
+#
+
+#Create the meta-data for the SystemHA-disk and then bring up the resource. Do this on both machines
+drbdadm create-md drbd-vm
+###answer y or yes for all questions, in the above command
+drbdadm up drbd-vm
+
+###Sanity check. You should see something like this in the output
+```
+
+Server #1 - this will override all of the DRBD data on server #2
+```
+drbdadm -- --overwrite-data-of-peer primary drbd-vm
+```
+
+Watch the progress of the transfer (either server)
+```
+cat /proc/drbd
+```
