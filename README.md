@@ -316,10 +316,10 @@ extra = "debian-installer/exit/always_halt=true -- console=hvc0"
 
 xm create /etc/xen/SystemHA.cfg -c
 # run the install
-sudo ln -s /usr/lib/xen-4.1/bin/pygrub /usr/bin/pygrub
+
 vi  /etc/xen/SystemHA.cfg
 # 
-bootloader = "pygrub"
+bootloader = "/usr/lib/xen-4.1/bin/pygrub"
 # comment out 'kernel' 'ramdisk' and 'extra'
 #
 
@@ -344,7 +344,7 @@ pkill -USR1 remus
 ```
 sudo lvcreate -L 4G -n ubuntu-hvm /dev/ubuntu
 ```
-Create a guest config file /etc/xen/ubuntu.cfg
+Create a guest config file `/etc/xen/ubuntu.cfg`
 ```
 builder = "hvm"
 name = "ubuntu"
