@@ -8,8 +8,8 @@ Choose 'Use entire disk with LVM'
 
 Network setup
 ```
-sudo apt-get install bridge-utils
-sudo vi /etc/network/interfaces
+apt-get install bridge-utils
+vi /etc/network/interfaces
 #
 auto xenbr0
 iface xenbr0 inet dhcp
