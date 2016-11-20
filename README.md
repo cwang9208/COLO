@@ -245,3 +245,51 @@ Watch the progress of the transfer (either server)
 ```
 cat /proc/drbd
 ```
+
+
+##Test VM with Remus
+Server #1
+```
+mkdir -p /var/lib/xen/images/ubuntu-netboot
+cd /var/lib/xen/images/ubuntu-netboot
+wget http://ubuntu.c3sl.ufpr.br/ubuntu/dists/precise/main/installer-amd64/current/images/netboot/xen/initrd.gz
+wget http://ubuntu.c3sl.ufpr.br/ubuntu/dists/precise/main/installer-amd64/current/images/netboot/xen/vmlinuz
+
+vi /etc/xen/SystemHA.cfg
+#
+name = "SystemHA"
+
+memory = 256
+
+disk = [ 'drbd:drbd-vm,xvda,w' ]
+vif = [' mac=18:66:da:03:15:b1,bridge=xenbr0' ]
+
+kernel = "/var/lib/xen/images/ubuntu-netboot/vmlinuz"
+ramdisk = "/var/lib/xen/images/ubuntu-netboot/initrd.gz"
+extra = "debian-installer/exit/always_halt=true -- console=hvc0"
+#
+
+xm create /etc/xen/SystemHA.cfg -c
+# run the install
+sudo ln -s /usr/lib/xen-4.1/bin/pygrub /usr/bin/pygrub
+vi  /etc/xen/SystemHA.cfg
+# 
+bootloader = "pygrub"
+# comment out 'kernel' 'ramdisk' and 'extra'
+#
+
+xm create /etc/xen/SystemHA.cfg -c
+```
+Sometimes, for development or analysis purposes, you dont really want to replicate to a physical machine. You just want to gather up the statistics such as number of pages that changed in a checkpoint, size of data sent, etc. In this case, all you need is a system to continuously checkpoint the VM and replicate it to a sink like /dev/null, while still gathering up stats.
+```
+#remus options:
+  -i MS, --interval=MS checkpoint every MS milliseconds
+  --blackhole          replicate to /dev/null (no disk checkpoints, only memory & net buffering)
+  --no-net             run without net buffering (benchmark option)
+#
+remus -i 40 --blackhole --no-net SystemHA dummyHost >/var/log/xen/domU-blackhole.log 2>&1 &
+```
+The VM SystemHA is continuously checkpointed but replicated to /dev/null. Gather up all the stats you want and then kill remus
+```
+pkill -USR1 remus
+```
