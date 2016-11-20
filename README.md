@@ -29,7 +29,7 @@ vi /etc/hosts
 ```
 
 ## Builing the Linux Kernel
-#### Download
+#### Sources
 ```
 git clone git://git.kernel.org/pub/scm/linux/kernel/git/jeremy/xen.git linux-2.6-xen
 cd linux-2.6-xen
