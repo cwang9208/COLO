@@ -20,11 +20,13 @@ iface eth0 inet manual
 #
 ```
 
+```
 vi /etc/hosts
 #
 147.8.177.50 cheng-HP-Compaq-Elite-8300-SFF
 147.8.179.243 wang-HP-Compaq-Elite-8300-SFF
 #
+```
 
 ## Builing the Linux Kernel
 #### Download
@@ -72,17 +74,23 @@ Building and Installation
    cd e1000e-<x.x.x>/src/
 
 4. Compile the driver module:
-   # make install
+   ```
+   make install
+   ```
    The binary will be installed as:
    /lib/modules/<KERNEL VERSION>/updates/drivers/net/ethernet/intel/e1000e/e1000e.ko
 
    The install location listed above is the default location. This may differ for various Linux distributions.
 
 5. Load the module using the modprobe command:
+   ```
    modprobe <e1000e> [parameter=port1_value,port2_value]
+   ```
 
    Make sure that any older e1000e drivers are removed from the kernel before loading the new module:
+   ```
    rmmod e1000e; modprobe e1000e
+   ```
 
 ## Install Xen
 
@@ -199,8 +207,8 @@ vi /etc/modules
 ```
 
 Both Servers
-```
 ![lvreduce](https://github.com/wangchenghku/Remus/blob/master/.resources/lvreduce.png)
+```
 cp /home/user/drbd-8.3.11/scripts/global_common.conf.protoD /etc/drbd.d/global_common.conf
 cp /home/user/drbd-8.3.11/scripts/testvms_protoD.res /etc/drbd.d/SystemHA_protoD.res
 lvcreate -n drbdtest -L 10G ubuntu
