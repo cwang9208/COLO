@@ -220,7 +220,7 @@ vi /etc/modules
 # add drbd
 #
 tar zcvf drbd.tgz ./drbd-8.3.11
-# scp to the other machine
+# scp to server #2
 ```
 
 Server #2
