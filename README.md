@@ -23,7 +23,7 @@ iface eth0 inet manual
 ```
 vi /etc/hosts
 #
-147.8.177.50 cheng-HP-Compaq-Elite-8300-SFF
+147.8.177.50  cheng-HP-Compaq-Elite-8300-SFF
 147.8.179.243 wang-HP-Compaq-Elite-8300-SFF
 #
 ```
