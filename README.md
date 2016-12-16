@@ -183,7 +183,6 @@ make install-tools
 
 update-grub2
 ```
-![patch](https://github.com/wangchenghku/Remus/blob/master/.resources/patch.png)
 
 Fix init.d scripts to start xend daemon on boot
 ```
