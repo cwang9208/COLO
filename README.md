@@ -38,7 +38,7 @@ like Primary side
 - Create a virtual machine
 ```
 # dd if=/dev/zero of=ubuntu-server.img bs=1M count=8192
-# x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-server.img -cdrom ubuntu-14.04.1-desktop-amd64.iso
+# x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-server.img -cdrom ubuntu-14.04.1-server-amd64.iso
 # vi /etc/network/interfaces
 auto eth0
 iface eth0 inet static
