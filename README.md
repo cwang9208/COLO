@@ -39,7 +39,7 @@ like Primary side
 ```
 # dd if=/dev/zero of=ubuntu-server.img bs=1M count=8192
 # x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-server.img -cdrom ubuntu-14.04.1-server-amd64.iso
-# x86_64-softmmu/qemu-system-x86_64 -m 4096 -smp 4 -hda ubuntu-server.img -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown -device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66 -vnc :7
+# x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -hda ubuntu-server.img -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown -device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66 -vnc :7
 # vi /etc/network/interfaces
 auto eth0
 iface eth0 inet static
