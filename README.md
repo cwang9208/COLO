@@ -57,7 +57,6 @@ hkucs-PowerEdge-R430-1:~$ vi /etc/exports
 /ubuntu  *(rw,sync,no_root_squash)
 #
 hkucs-PowerEdge-R430-1:~$ service nfs-kernel-server restart
-
 hkucs-PowerEdge-R430-2/3:~$ sudo mount 10.22.1.1:/ubuntu /local/ubuntu
 ```
 
