@@ -5,6 +5,7 @@
   - Checkout the latest COLO branch from [colo-v5.1-developing-COLO-frame-v21-with-shared-disk](https://github.com/coloft/qemu/tree/colo-v5.1-developing-COLO-frame-v21-with-shared-disk)
 ```
 # cd qemu
+# git checkout 'colo-v5.1-developing-COLO-frame-v21-with-shared-disk'
 # ./configure --target-list=x86_64-softmmu --enable-colo --enable-gcrypt --enable-replication
 # make -j
 ```
@@ -36,8 +37,28 @@ like Primary side
 
 - Create a virtual machine
 ```
-dd if=/dev/zero of=ubuntu-server.img bs=1M count=8192
-x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-server.img -cdrom ubuntu-14.04.1-desktop-amd64.iso -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown -device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66
+# dd if=/dev/zero of=ubuntu-server.img bs=1M count=8192
+# x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-server.img -cdrom ubuntu-14.04.1-desktop-amd64.iso
+# vi /etc/network/interfaces
+auto eth0
+iface eth0 inet static
+	address 10.22.1.11
+	netmask 255.255.255.0
+# cat /etc/apt/apt.conf
+Acquire::http::proxy "http://10.22.1.1:3128";
+Acquire::https::proxy "http://10.22.1.1:3128";
+Acquire::ftp::proxy "http://10.22.1.1:3128";
+```
+
+- NFS
+```
+hkucs-PowerEdge-R430-1:~$ vi /etc/exports
+#
+/ubuntu  *(rw,sync,no_root_squash)
+#
+hkucs-PowerEdge-R430-1:~$ service nfs-kernel-server restart
+
+hkucs-PowerEdge-R430-2/3:~$ sudo mount 10.22.1.1:/ubuntu /local/ubuntu
 ```
 
 ## Test steps
@@ -45,7 +66,17 @@ x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-serv
 - (1) Startup qemu
 - *Primary side*
 ```
-# x86_64-softmmu/qemu-system-x86_64 -enable-kvm -boot c -m 2048 -smp 2 -qmp stdio -vnc :7 -name primary -cpu qemu64,+kvmclock -device piix3-usb-uhci -drive if=virtio,id=colo-disk0,driver=quorum,read-pattern=fifo,vote-threshold=1,children.0.file.filename=/local/ubuntu/ubuntu-server.img,children.0.driver=raw -S -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown -device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66 -chardev socket,id=mirror0,host=10.22.1.2,port=9003,server,nowait -chardev socket,id=compare1,host=10.22.1.2,port=9004,server,nowait -chardev socket,id=compare0,host=10.22.1.2,port=9001,server,nowait -chardev socket,id=compare0-0,host=10.22.1.2,port=9001 -chardev socket,id=compare_out,host=10.22.1.2,port=9005,server,nowait -chardev socket,id=compare_out0,host=10.22.1.2,port=9005 -object filter-mirror,id=m0,netdev=hn0,queue=tx,outdev=mirror0 -object filter-redirector,netdev=hn0,id=redire0,queue=rx,indev=compare_out -object filter-redirector,netdev=hn0,id=redire1,queue=rx,outdev=compare0 -object colo-compare,id=comp0,primary_in=compare0-0,secondary_in=compare1,outdev=compare_out0
+# x86_64-softmmu/qemu-system-x86_64 -enable-kvm -boot c -m 2048 -smp 2 -qmp stdio -vnc :7 -name primary -cpu qemu64,+kvmclock -device piix3-usb-uhci \
+  -drive if=virtio,id=colo-disk0,driver=quorum,read-pattern=fifo,vote-threshold=1,children.0.file.filename=/local/ubuntu/ubuntu-server.img,children.0.driver=raw -S \
+  -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown \
+  -device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66 \
+  -chardev socket,id=mirror0,host=10.22.1.2,port=9003,server,nowait -chardev socket,id=compare1,host=10.22.1.2,port=9004,server,nowait \
+  -chardev socket,id=compare0,host=10.22.1.2,port=9001,server,nowait -chardev socket,id=compare0-0,host=10.22.1.2,port=9001 \
+  -chardev socket,id=compare_out,host=10.22.1.2,port=9005,server,nowait \
+  -chardev socket,id=compare_out0,host=10.22.1.2,port=9005 \
+  -object filter-mirror,id=m0,netdev=hn0,queue=tx,outdev=mirror0 \
+  -object filter-redirector,netdev=hn0,id=redire0,queue=rx,indev=compare_out -object filter-redirector,netdev=hn0,id=redire1,queue=rx,outdev=compare0 \
+  -object colo-compare,id=comp0,primary_in=compare0-0,secondary_in=compare1,outdev=compare_out0
 ```
 - *Secondary side*
 ```
@@ -53,7 +84,15 @@ x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -boot order=cd -hda ubuntu-serv
 
 # qemu-img create -f qcow2 /local/ubuntu/hidden_disk.img 8G
 
-# x86_64-softmmu/qemu-system-x86_64 -boot c -m 2048 -smp 2 -qmp stdio -vnc :7 -name secondary -enable-kvm -cpu qemu64,+kvmclock -device piix3-usb-uhci -drive if=none,id=colo-disk0,file.filename=/local/ubuntu/ubuntu-server.img,driver=raw,node-name=node0 -drive if=virtio,id=active-disk0,driver=replication,mode=secondary,file.driver=qcow2,top-id=active-disk0,file.file.filename=/mnt/ramfs/active_disk.img,file.backing.driver=qcow2,file.backing.file.filename=/mnt/ramfs/hidden_disk.img,file.backing.backing=colo-disk0 -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown -device e1000,netdev=hn0,mac=52:a4:00:12:78:66 -chardev socket,id=red0,host=10.22.1.2,port=9003 -chardev socket,id=red1,host=10.22.1.2,port=9004 -object filter-redirector,id=f1,netdev=hn0,queue=tx,indev=red0 -object filter-redirector,id=f2,netdev=hn0,queue=rx,outdev=red1 -object filter-rewriter,id=rew0,netdev=hn0,queue=all -incoming tcp:0:8888
+# x86_64-softmmu/qemu-system-x86_64 -boot c -m 2048 -smp 2 -qmp stdio -vnc :7 -name secondary -enable-kvm -cpu qemu64,+kvmclock -device piix3-usb-uhci \
+  -drive if=none,id=colo-disk0,file.filename=/local/ubuntu/ubuntu-server.img,driver=raw,node-name=node0 \
+  -drive if=virtio,id=active-disk0,driver=replication,mode=secondary,file.driver=qcow2,top-id=active-disk0,file.file.filename=/local/ubuntu/active_disk.img,file.backing.driver=qcow2,file.backing.file.filename=/local/ubuntu/hidden_disk.img,file.backing.backing=colo-disk0  \
+  -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown \
+  -device e1000,netdev=hn0,mac=52:a4:00:12:78:66 -chardev socket,id=red0,host=10.22.1.2,port=9003 \
+  -chardev socket,id=red1,host=10.22.1.2,port=9004 \
+  -object filter-redirector,id=f1,netdev=hn0,queue=tx,indev=red0 \
+  -object filter-redirector,id=f2,netdev=hn0,queue=rx,outdev=red1 \
+  -object filter-rewriter,id=rew0,netdev=hn0,queue=all -incoming tcp:0:8888
 ```
 - (2) On Secondary VM's monitor, issue command
 ```
