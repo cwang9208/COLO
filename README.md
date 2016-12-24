@@ -2,7 +2,7 @@
 
 ## Test environment prepare
 - Qemu colo
-  - Checkout the latest COLO branch from colo-v5.1-developing-COLO-frame-v21-with-shared-disk
+  - Checkout the latest COLO branch from [colo-v5.1-developing-COLO-frame-v21-with-shared-disk](https://github.com/coloft/qemu/tree/colo-v5.1-developing-COLO-frame-v21-with-shared-disk)
 ```
 # cd qemu
 # ./configure --target-list=x86_64-softmmu --enable-colo --enable-gcrypt --enable-replication
