@@ -102,8 +102,8 @@ hkucs-PowerEdge-R430-2/3:~$ sudo mount 10.22.1.1:/ubuntu /local/ubuntu
 {'execute': 'nbd-server-add', 'arguments': {'device': 'colo-disk0', 'writable': true } }
 ```
 ***Note***:  
-a. The qmp command nbd-server-start and nbd-server-add must be run before running the qmp command migrate on primary QEMU  
-b. Active disk, hidden disk and nbd target's length should be the same.
+*a. The qmp command nbd-server-start and nbd-server-add must be run before running the qmp command migrate on primary QEMU  
+b. Active disk, hidden disk and nbd target's length should be the same.*
 
 - (3) On Primary VM's monitor, issue command:
 ```
