@@ -44,7 +44,7 @@ auto eth0
 iface eth0 inet static
 	address 10.22.1.11
 	netmask 255.255.255.0
-# cat /etc/apt/apt.conf
+# vi /etc/apt/apt.conf
 Acquire::http::proxy "http://10.22.1.1:3128";
 Acquire::https::proxy "http://10.22.1.1:3128";
 Acquire::ftp::proxy "http://10.22.1.1:3128";
