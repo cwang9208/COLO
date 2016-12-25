@@ -11,6 +11,29 @@
 
 - Set Up the Bridge and network environment
 
+- Qemu-ifup/Qemu-ifdown
+  - We need a script to bring up the TAP interface. 
+```
+NOTE: Don't forget to change this script file permission to be executable
+
+Primary:
+root@master# cat /etc/qemu-ifup
+#!/bin/sh
+switch=br0
+if [ -n "$1" ]; then
+         ip link set $1 up
+         brctl addif ${switch} $1
+fi
+root@master# cat /etc/qemu-ifdown
+!/bin/sh
+switch=br0
+if [ -n "$1" ]; then
+        brctl delif ${switch} $1
+fi
+Secondary:
+like Primary side
+```
+
 ## Test steps
 **Note: Here the primary side host ip is 10.22.1.2, secondary side host ip is 10.22.1.3. Please change them according to your actual environment.**
 - (1) Startup qemu
