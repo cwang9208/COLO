@@ -9,7 +9,7 @@
 # make -j
 ```
 
-Set Up the Bridge and network environment
+- Set Up the Bridge and network environment
 
 ## Test steps
 **Note: Here the primary side host ip is 10.22.1.2, secondary side host ip is 10.22.1.3. Please change them according to your actual environment.**
@@ -52,9 +52,10 @@ Set Up the Bridge and network environment
 }
 {'execute': 'nbd-server-add', 'arguments': {'device': 'colo-disk0', 'writable': true } }
 ```
-**Note**:
-a. The qmp command nbd-server-start and nbd-server-add must be run before running the qmp command migrate on primary QEMU
+***Note***:  
+a. The qmp command nbd-server-start and nbd-server-add must be run before running the qmp command migrate on primary QEMU  
 b. Active disk, hidden disk and nbd target's length should be the same.
+
 - (3) On Primary VM's monitor, issue command:
 ```
 {'execute':'qmp_capabilities'}
