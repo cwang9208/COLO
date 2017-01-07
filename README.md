@@ -168,7 +168,7 @@ The meaning of the fields is as follows:
    - This record matches connection attempts using Unix-domain sockets. Without a record of this type, Unix-domain socket connections are disallowed.
 - host
    - This record matches connection attempts made using TCP/IP.
-   - Note: If you want to allow non-local connections, you need to add more "host" records.  In that case you will also need to make PostgreSQL listen on a non-local interface via the listen_addresses configuration parameter, or via the -i or -h command line switches.
+   - Note: If you want to allow non-local connections, you need to add more "host" records.  In that case you will also need to make PostgreSQL listen on a non-local interface via the `listen_addresses` configuration parameter, or via the `-i` or `-h` command line switches.
 
 - ***database***
   - Specifies which database name(s) this record matches. The value all specifies that it matches all databases.
