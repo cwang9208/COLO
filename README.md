@@ -201,7 +201,6 @@ Options:
 Options:
   -D DATADIR         database directory
   -h HOSTNAME        host name or IP address to listen on
-
 ```
 /usr/local/pgsql/bin/createdb creates a PostgreSQL database.
 ```
