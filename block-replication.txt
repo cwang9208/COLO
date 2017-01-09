@@ -29,5 +29,5 @@ The following is the image of block replication workflow:
     3) Primary write requests will be written to Secondary disk.
     4) Secondary write requests will be buffered in the Disk buffer and it
        will overwrite the existing sector content in the buffer.
-The sector content in the buffer is dropped by Secondary at next checkpoint time,
-then Primary Disk and Secondary Disk are consistent.
+The sector content in the buffer is dropped by Secondary at next checkpoint
+time, then Primary Disk and Secondary Disk are consistent.
