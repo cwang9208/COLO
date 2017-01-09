@@ -15,7 +15,7 @@ COLO implements the per TCP connection response packet comparison, and considers
 Secondary:
 
 Guest --> TCP Rewriter Filter  
-If the packet is TCP packet,we will adjust seq and update TCP checksum. Then send it to redirect client filter. Otherwise directly send to redirect client filter.
+If the packet is TCP packet, we will adjust seq and update TCP checksum. Then send it to redirect client filter. Otherwise directly send to redirect client filter.
 
 Redirect Client Filter --> Redirect Server Filter  
 Forward packet to primary.
