@@ -10,16 +10,6 @@
 
 COLO implements the per TCP connection response packet comparison, and considers the SVM as valid replica, if the response packets of each TCP connection from the PVM and SVM are identical.
 
-### Guest send packet route
-
-Secondary:
-
-Guest --> TCP Rewriter Filter  
-If the packet is TCP packet,we will adjust seq and update TCP checksum. Then send it to redirect client filter. Otherwise directly send to redirect client filter.
-
-Redirect Client Filter --> Redirect Server Filter  
-Forward packet to primary.
-
 ## Components introduction
 Filter-redirector is a netfilter plugin. It gives qemu the ability to redirect net packet. Redirector can redirect filter's net packet to outdev, and redirect indev's packet to filter.
 
@@ -38,16 +28,16 @@ Filter-redirector is a netfilter plugin. It gives qemu the ability to redirect n
 
     filter-redirector on netdev netdevid,redirect filter’s net packet to chardev chardevid,and redirect indev’s packet to filter.
 
-Primary(ip:10.22.1.2):
+Primary(ip:9.61.1.8):
 -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown
 -device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66
--chardev socket,id=mirror0,host=10.22.1.2,port=9003,server,nowait
+-chardev socket,id=mirror0,host=9.61.1.8,port=9003,server,nowait
 -object filter-mirror,id=m0,netdev=hn0,queue=tx,outdev=mirror0
 
-Secondary(ip:10.22.1.3):
+Secondary(ip:9.61.1.7):
 -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown
 -device e1000,netdev=hn0,mac=52:a4:00:12:78:66
--chardev socket,id=red0,host=10.22.1.2,port=9003
+-chardev socket,id=red0,host=9.61.1.8,port=9003
 -object filter-redirector,id=f1,netdev=hn0,queue=tx,indev=red0
 ```
 
