@@ -1,0 +1,33 @@
+== Workflow ==
+The following is the image of block replication workflow:
+
+        +----------------------+            +------------------------+
+        |Primary Write Requests|            |Secondary Write Requests|
+        +----------------------+            +------------------------+
+                  |                                       |
+                  |                                      (4)
+                  |                                       V
+                  |                              /-------------\
+                  |      Copy and Forward        |             |
+                  |---------(1)----------+       | Disk Buffer |
+                  |                      |       |             |
+                  |                     (3)      \-------------/
+                  |                 speculative      ^
+                  |                write through    (2)
+                  |                      |           |
+                  V                      V           |
+           +--------------+           +----------------+
+           | Primary Disk |           | Secondary Disk |
+           +--------------+           +----------------+
+
+    1) Primary write requests will be copied and forwarded to Secondary
+       QEMU.
+    2) Before Primary write requests are written to Secondary disk, the
+       original sector content will be read from Secondary disk and
+       buffered in the Disk buffer (PVM and SVM execute in parallel and
+       they are not in the same state).
+    3) Primary write requests will be written to Secondary disk.
+    4) Secondary write requests will be buffered in the Disk buffer and it
+       will overwrite the existing sector content in the buffer.
+The sector content in the buffer is dropped by Secondary at next checkpoint time,
+then Primary Disk and Secondary Disk are consistent.

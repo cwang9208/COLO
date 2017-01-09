@@ -1,4 +1,4 @@
-# COLO
+# How to setup/test COLO
 
 ## Test environment prepare
 - Qemu colo
