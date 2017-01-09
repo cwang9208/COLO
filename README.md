@@ -151,7 +151,7 @@ If you are building from a Git tree instead of using a released source package, 
 
 #### Install pgbench
 ```
-cd contrib
+cd contrib/pgbench/
 make
 ```
 
