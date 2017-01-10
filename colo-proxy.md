@@ -15,7 +15,7 @@ COLO implements the per TCP connection response packet comparison, and considers
 Secondary:
 
 Guest --> TCP Rewriter Filter  
-If the packet is TCP packet, we will adjust seq and update TCP checksum. Then send it to redirect client filter. Otherwise directly send to redirect client filter.
+If the packet is TCP packet,we will adjust seq and update TCP checksum. Then send it to redirect client filter. Otherwise directly send to redirect client filter.
 
 Redirect Client Filter --> Redirect Server Filter  
 Forward packet to primary.
@@ -34,15 +34,19 @@ Filter-redirector is a netfilter plugin. It gives qemu the ability to redirect n
 
     queue all|rx|tx is an option that can be applied to any netfilter.
     rx: the filter is attached to the receive queue of the netdev, where it will receive packets sent to the netdev.
+    tx: the filter is attached to the transmit queue of the netdev, where it will receive packets sent by the netdev.
 
     filter-redirector on netdev netdevid,redirect filter’s net packet to chardev chardevid,and redirect indev’s packet to filter.
 
 colo secondary:
-Secondary(ip:3.3.3.8):
--netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,down script=/etc/qemu-ifdown
--device e1000,netdev=hn0,mac=52:a4:00:12:78:66
--chardev socket,id=red1,host=3.3.3.3,port=9004
+Secondary(ip:9.61.1.7):
+-netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown
+-device e1000,netdev=hn0,mac=52:a4:00:12:78:66 
+-chardev socket,id=red0,host=9.61.1.8,port=9003
+-chardev socket,id=red1,host=9.61.1.8,port=9004
+-object filter-redirector,id=f1,netdev=hn0,queue=tx,indev=red0
 -object filter-redirector,id=f2,netdev=hn0,queue=rx,outdev=red1
+-object filter-rewriter,id=rew0,netdev=hn0,queue=all
 ```
 
 Note:
