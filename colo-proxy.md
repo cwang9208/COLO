@@ -33,20 +33,22 @@ Filter-redirector is a netfilter plugin. It gives qemu the ability to redirect n
 -object filter-redirector,id=id,netdev=netdevid,indev=chardevid,outdev=chardevid[,queue=all|rx|tx]
 
     queue all|rx|tx is an option that can be applied to any netfilter.
-    rx: the filter is attached to the receive queue of the netdev, where it will receive packets sent to the netdev.
     tx: the filter is attached to the transmit queue of the netdev, where it will receive packets sent by the netdev.
+    Note: On receiving a packet, QEMU calls tap_send.
 
     filter-redirector on netdev netdevid,redirect filter’s net packet to chardev chardevid,and redirect indev’s packet to filter.
 
-colo secondary:
-Secondary(ip:9.61.1.7):
+Primary(ip:10.22.1.2):
 -netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown
--device e1000,netdev=hn0,mac=52:a4:00:12:78:66 
--chardev socket,id=red0,host=9.61.1.8,port=9003
--chardev socket,id=red1,host=9.61.1.8,port=9004
+-device e1000,id=e0,netdev=hn0,mac=52:a4:00:12:78:66
+-chardev socket,id=mirror0,host=10.22.1.2,port=9003,server,nowait
+-object filter-mirror,id=m0,netdev=hn0,queue=tx,outdev=mirror0
+
+Secondary(ip:10.22.1.3):
+-netdev tap,id=hn0,vhost=off,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown
+-device e1000,netdev=hn0,mac=52:a4:00:12:78:66
+-chardev socket,id=red0,host=10.22.1.2,port=9003
 -object filter-redirector,id=f1,netdev=hn0,queue=tx,indev=red0
--object filter-redirector,id=f2,netdev=hn0,queue=rx,outdev=red1
--object filter-rewriter,id=rew0,netdev=hn0,queue=all
 ```
 
 Note:
