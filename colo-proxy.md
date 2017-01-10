@@ -10,12 +10,26 @@
 
 COLO implements the per TCP connection response packet comparison, and considers the SVM as valid replica, if the response packets of each TCP connection from the PVM and SVM are identical.
 
+### Guest send packet route
+
+Secondary:
+
+Guest --> TCP Rewriter Filter  
+If the packet is TCP packet,we will adjust seq and update TCP checksum. Then send it to redirect client filter. Otherwise directly send to redirect client filter.
+
+Redirect Client Filter --> Redirect Server Filter  
+Forward packet to primary.
+
 ## Components introduction
 Filter-redirector is a netfilter plugin. It gives qemu the ability to redirect net packet. Redirector can redirect filter's net packet to outdev, and redirect indev's packet to filter.
 
 ## Usage
 
 ```
+-chrdev socket ,id=id [TCP options or unix options] [,server] [,nowait]
+	server specifies that the socket shall be a listening socket.
+	nowait specifies that QEMU should not block waiting for a client to connect to a listening socket.
+
 -object filter-redirector,id=id,netdev=netdevid,indev=chardevid,outdev=chardevid[,queue=all|rx|tx]
 
     queue all|rx|tx is an option that can be applied to any netfilter.
@@ -30,3 +44,7 @@ Secondary(ip:3.3.3.8):
 -chardev socket,id=red1,host=3.3.3.3,port=9004
 -object filter-redirector,id=f2,netdev=hn0,queue=rx,outdev=red1
 ```
+
+Note:
+
+1. Primary COLO must be started firstly, because COLO-proxy needs chardev socket server running before secondary started.
