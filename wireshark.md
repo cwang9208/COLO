@@ -1,0 +1,2 @@
+## IPv4 over Ethernet
+Ethernet frame is composed of a header and a trailer. The header has three fields (destination address, source address, and type) and is 14 bytes long. The trailer has one field (CRC) with a length of 4 bytes. The payload of Ethernet has a minimum length of 46 byes and a maximum length of 1500 bytes, so called the MTU. If a higher layer protocol (such as IP, IP header = 20 bytes) provides a packet that is smaller than 46 bytes, padding must be done by Ethernet to complete the minimum Ethernet data length.
