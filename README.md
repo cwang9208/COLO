@@ -150,6 +150,7 @@ If you are building from a Git tree instead of using a released source package, 
 * GNU Flex and Bison are needed to build from a Git checkout, or if you changed the actual scanner and parser definition files. If you need them, be sure to get Flex 2.5.31 or later and Bison 1.875 or later. Other lex and yacc programs cannot be used.
 
 #### Install pgbench
+pgbench is a simple program for running benchmark tests on PostgreSQL. By default, pgbench tests a scenario that is loosely based on TPC-B, involving five SELECT, UPDATE, and INSERT commands per transaction.
 ```
 cd contrib/pgbench/
 make
