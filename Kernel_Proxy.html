@@ -1,0 +1,517 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0061)http://wiki.qemu.org/index.php?title=Features/COLO&oldid=5713 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta http-equiv="Content-Style-Type" content="text/css">
+		<meta name="generator" content="MediaWiki 1.15.1">
+		<meta name="robots" content="noindex,nofollow">
+		<meta name="keywords" content="Features/COLO">
+		<link rel="alternate" type="application/x-wiki" title="Edit" href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;action=edit">
+		<link rel="edit" title="Edit" href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;action=edit">
+		<link rel="shortcut icon" href="http://wiki.qemu.org/favicon.ico">
+		<link rel="search" type="application/opensearchdescription+xml" href="http://wiki.qemu.org/opensearch_desc.php" title="QEMU (en)">
+		<link title="Creative Commons" type="application/rdf+xml" href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;action=creativecommons" rel="meta">
+		<link rel="copyright" href="http://www.gnu.org/licenses/old-licenses/fdl-1.2.txt">
+		<link rel="alternate" type="application/rss+xml" title="QEMU RSS Feed" href="http://wiki.qemu.org/index.php?title=Special:RecentChanges&amp;feed=rss">
+		<link rel="alternate" type="application/atom+xml" title="QEMU Atom Feed" href="http://wiki.qemu.org/index.php?title=Special:RecentChanges&amp;feed=atom">
+		<title>Features/COLO - QEMU</title>
+		<link rel="stylesheet" href="./Features_COLO - QEMU_files/shared.css" type="text/css" media="screen">
+		<link rel="stylesheet" href="./Features_COLO - QEMU_files/commonPrint.css" type="text/css" media="print">
+		<link rel="stylesheet" href="./Features_COLO - QEMU_files/index.php" type="text/css">
+		<link rel="stylesheet" href="./Features_COLO - QEMU_files/index(1).php" type="text/css" media="print">
+		<link rel="stylesheet" href="./Features_COLO - QEMU_files/index(2).php" type="text/css">
+		<link rel="stylesheet" href="./Features_COLO - QEMU_files/index(3).php" type="text/css">
+				<!--[if lt IE 5.5000]><style type="text/css">@import "/skins/cavendish/IE50Fixes.css?207";</style><![endif]-->
+		<!--[if IE 5.5000]><style type="text/css">@import "/skins/cavendish/IE55Fixes.css?207";</style><![endif]-->
+		<!--[if IE 6]><style type="text/css">@import "/skins/cavendish/IE60Fixes.css?207";</style><![endif]-->
+		<!--[if IE 7]><style type="text/css">@import "/skins/cavendish/IE70Fixes.css?207";</style><![endif]-->
+				<!--[if lt IE 7]>
+		<script type="text/javascript" src="/skins/common/IEFixes.js?207"></script>
+		<meta http-equiv="imagetoolbar" content="no" />
+		<![endif]-->
+		
+		<script type="text/javascript">/*<![CDATA[*/
+		var skin = "cavendish";
+		var stylepath = "/skins";
+		var wgArticlePath = "/$1";
+		var wgScriptPath = "";
+		var wgScript = "/index.php";
+		var wgVariantArticlePath = false;
+		var wgActionPaths = {};
+		var wgServer = "http://wiki.qemu.org";
+		var wgCanonicalNamespace = "";
+		var wgCanonicalSpecialPageName = false;
+		var wgNamespaceNumber = 0;
+		var wgPageName = "Features/COLO";
+		var wgTitle = "Features/COLO";
+		var wgAction = "view";
+		var wgArticleId = 984;
+		var wgIsArticle = true;
+		var wgUserName = "Yang";
+		var wgUserGroups = ["*", "user", "autoconfirmed"];
+		var wgUserLanguage = "en";
+		var wgContentLanguage = "en";
+		var wgBreakFrames = false;
+		var wgCurRevisionId = 6496;
+		var wgVersion = "1.15.1";
+		var wgEnableAPI = true;
+		var wgEnableWriteAPI = true;
+		var wgSeparatorTransformTable = ["", ""];
+		var wgDigitTransformTable = ["", ""];
+		var wgRestrictionEdit = [];
+		var wgRestrictionMove = [];
+		var wgAjaxWatch = {"watchMsg": "Watch", "unwatchMsg": "Unwatch", "watchingMsg": "Watching…", "unwatchingMsg": "Unwatching…"};
+		/*]]>*/</script>
+
+		<script type="text/javascript" src="./Features_COLO - QEMU_files/wikibits.js"><!-- wikibits js --></script><style type="text/css">@import "/skins/cavendish/KHTMLFixes.css";</style>
+		<!-- Head Scripts -->
+				<script type="text/javascript" src="./Features_COLO - QEMU_files/ajax.js"></script>
+		<script type="text/javascript" src="./Features_COLO - QEMU_files/ajaxwatch.js"></script>
+		<!-- site js -->
+				<script type="text/javascript" src="./Features_COLO - QEMU_files/index(4).php"><!-- site js --></script>
+				<!-- should appear here -->
+				<style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "/skins/cavendish/main.css"; /*]]>*/</style>
+		<style type="text/css" media="screen,projection">/*<![CDATA[*/ @import "/skins/cavendish/extensions.css"; /*]]>*/</style>
+		<style media="print" type="text/css">/*<![CDATA[*/ @import "/skins/cavendish/print.css"; /*]]>*/</style>
+		<link rel="stylesheet" type="text/css" media="print" href="./Features_COLO - QEMU_files/commonPrint(1).css">
+		<script type="text/javascript" src="./Features_COLO - QEMU_files/wikibits(1).js"></script><style type="text/css">@import "/skins/cavendish/KHTMLFixes.css";</style>
+<!--		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-27460402-1']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+			  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+			})();
+	       </script> -->
+	</head>
+<body class="mediawiki ltr ns-0 ns-subject page-Features_COLO skin-cavendish">
+<div id="internal"></div>
+<div id="container">
+
+	<div id="p-personal">
+		<ul class="top-nav">
+						
+			<li class="top-nav-element">
+				<span class="top-nav-left">&nbsp;</span>
+				<a class="top-nav-mid" href="http://wiki.qemu.org/User:Yang">Yang</a>	
+				<span class="top-nav-right">&nbsp;</span>
+							
+			</li><li class="top-nav-element">
+				<span class="top-nav-left">&nbsp;</span>
+				<a class="top-nav-mid" href="http://wiki.qemu.org/User_talk:Yang">My talk</a>	
+				<span class="top-nav-right">&nbsp;</span>
+							
+			</li><li class="top-nav-element">
+				<span class="top-nav-left">&nbsp;</span>
+				<a class="top-nav-mid" href="http://wiki.qemu.org/Special:Preferences">My preferences</a>	
+				<span class="top-nav-right">&nbsp;</span>
+							
+			</li><li class="top-nav-element">
+				<span class="top-nav-left">&nbsp;</span>
+				<a class="top-nav-mid" href="http://wiki.qemu.org/Special:Watchlist">My watchlist</a>	
+				<span class="top-nav-right">&nbsp;</span>
+							
+			</li><li class="top-nav-element">
+				<span class="top-nav-left">&nbsp;</span>
+				<a class="top-nav-mid" href="http://wiki.qemu.org/Special:Contributions/Yang">My contributions</a>	
+				<span class="top-nav-right">&nbsp;</span>
+							
+			</li><li class="top-nav-element">
+				<span class="top-nav-left">&nbsp;</span>
+				<a class="top-nav-mid" href="http://wiki.qemu.org/index.php?title=Special:UserLogout&amp;returnto=Features/COLO">Log out</a>	
+				<span class="top-nav-right">&nbsp;</span>
+							</li>
+		</ul>
+	</div>
+
+	<div id="header">
+		<a name="top" id="contentTop"></a>
+		<h6>
+		<a href="http://wiki.qemu.org/Main_Page" title="Main Page">Features/COLO - QEMU</a></h6>
+		<ul>
+		   	<li class="selected"><a href="http://wiki.qemu.org/Features/COLO">Page</a></li><li class="new"><a href="http://wiki.qemu.org/index.php?title=Talk:Features/COLO&amp;action=edit&amp;redlink=1">Discussion</a></li><li><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;action=edit&amp;oldid=5713">Edit</a></li><li><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;action=history">History</a></li><li><a href="http://wiki.qemu.org/Special:MovePage/Features/COLO">Move</a></li><li><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;action=watch">Watch</a></li>		</ul>
+		<form name="searchform" action="http://wiki.qemu.org/index.php" id="searchform">
+			<div>
+			<label for="searchInput">Search</label>
+			<input type="hidden" name="title" value="Special:Search">
+			<input id="searchInput" name="search" type="text" title="Search QEMU [ctrl-alt-f]" accesskey="f" value="">
+			<input type="submit" name="go" class="searchButton" id="searchGoButton" value="Go" title="Go to a page with this exact name if exists">&nbsp;
+			<input type="submit" name="fulltext" class="searchButton" id="mw-searchButton" value="Search" title="Search the pages for this text">
+	       </div>
+		</form>
+	</div>
+
+	<div id="mBody">
+	
+		<div id="side">
+			<ul id="nav">
+				<li class="generated-sidebar portlet" id="p-About">
+		<span>About</span>
+			<ul class="pBody">
+				<li id="n-Home"><a href="http://wiki.qemu.org/Main_Page">Home</a></li>
+			</ul>
+	</li>
+	<li class="generated-sidebar portlet" id="p-Get">
+		<span>Get</span>
+			<ul class="pBody">
+				<li id="n-Download"><a href="http://wiki.qemu.org/Download">Download</a></li>
+				<li id="n-License"><a href="http://wiki.qemu.org/License">License</a></li>
+			</ul>
+	</li>
+	<li class="generated-sidebar portlet" id="p-Contribute">
+		<span>Contribute</span>
+			<ul class="pBody">
+				<li id="n-Start-Here"><a href="http://wiki.qemu.org/Contribute">Start Here</a></li>
+				<li id="n-Report-a-Bug"><a href="http://wiki.qemu.org/Contribute/ReportABug">Report a Bug</a></li>
+				<li id="n-Report-a-security-issue"><a href="http://wiki.qemu.org/SecurityProcess">Report a security issue</a></li>
+				<li id="n-Submit-a-Patch"><a href="http://wiki.qemu.org/Contribute/SubmitAPatch">Submit a Patch</a></li>
+				<li id="n-Mailing-Lists"><a href="http://wiki.qemu.org/Contribute/MailingLists">Mailing Lists</a></li>
+				<li id="n-Testing-QEMU"><a href="http://wiki.qemu.org/Testing">Testing QEMU</a></li>
+			</ul>
+	</li>
+	<li class="generated-sidebar portlet" id="p-Virtualize">
+		<span>Virtualize</span>
+			<ul class="pBody">
+				<li id="n-KVM"><a href="http://wiki.qemu.org/Features/KVM">KVM</a></li>
+			</ul>
+	</li>
+	<li class="generated-sidebar portlet" id="p-Learn">
+		<span>Learn</span>
+			<ul class="pBody">
+				<li id="n-Documentation"><a href="http://wiki.qemu.org/Documentation">Documentation</a></li>
+				<li id="n-Links"><a href="http://wiki.qemu.org/Links">Links</a></li>
+			</ul>
+	</li>
+	<li class="portlet" id="p-tb">
+		<span>Toolbox</span>
+			<ul class="pBody">
+				<li id="t-whatlinkshere"><a href="http://wiki.qemu.org/Special:WhatLinksHere/Features/COLO" title="List of all wiki pages that link here [j]" accesskey="j">What links here</a></li>
+				<li id="t-recentchangeslinked"><a href="http://wiki.qemu.org/Special:RecentChangesLinked/Features/COLO" title="Recent changes in pages linked from this page [k]" accesskey="k">Related changes</a></li>
+<li id="t-upload"><a href="http://wiki.qemu.org/Special:Upload" title="Upload files [u]" accesskey="u">Upload file</a></li>
+<li id="t-specialpages"><a href="http://wiki.qemu.org/Special:SpecialPages" title="List of all special pages [q]" accesskey="q">Special pages</a></li>
+			</ul>
+	</li>
+				
+			</ul>
+		</div><!-- end of SIDE div -->
+		
+		<div id="bodyContent">
+						<h1>Features/COLO</h1>
+			<h3 id="siteSub">From QEMU</h3>
+			<div id="contentSub">
+				<div id="mw-revision-info">Revision as of 06:51, 17 August 2016 by <a href="http://wiki.qemu.org/index.php?title=User:Yang&amp;action=edit&amp;redlink=1" class="new mw-userlink" title="User:Yang (page does not exist)">Yang</a>  <span class="mw-usertoollinks">(<a href="http://wiki.qemu.org/index.php?title=User_talk:Yang&amp;action=edit&amp;redlink=1" class="new" title="User talk:Yang (page does not exist)">Talk</a> | <a href="http://wiki.qemu.org/Special:Contributions/Yang" title="Special:Contributions/Yang">contribs</a>)</span></div>
+
+				<div id="mw-revision-nav">(<a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;diff=prev&amp;oldid=5713" title="Features/COLO">diff</a>) <a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;direction=prev&amp;oldid=5713" title="Features/COLO">← Older revision</a> | <a href="http://wiki.qemu.org/Features/COLO" title="Features/COLO">Current revision</a> (<a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;diff=cur&amp;oldid=5713" title="Features/COLO">diff</a>) | <a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;direction=next&amp;oldid=5713" title="Features/COLO">Newer revision →</a> (<a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;diff=next&amp;oldid=5713" title="Features/COLO">diff</a>)</div>
+			</div>
+									<!-- start content -->
+			<table id="toc" class="toc" summary="Contents"><tbody><tr><td><div id="toctitle"><h2>Contents</h2> <span class="toctoggle">[<a id="togglelink" class="internal" href="javascript:toggleToc()">hide</a>]</span></div>
+<ul>
+<li class="toclevel-1"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Summary"><span class="tocnumber">1</span> <span class="toctext">Summary</span></a></li>
+<li class="toclevel-1"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Components"><span class="tocnumber">2</span> <span class="toctext">Components</span></a></li>
+<li class="toclevel-1"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Current_Status"><span class="tocnumber">3</span> <span class="toctext">Current Status</span></a></li>
+<li class="toclevel-1"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Failover_command"><span class="tocnumber">4</span> <span class="toctext">Failover command</span></a></li>
+<li class="toclevel-1"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#How_to_setup.2Ftest_COLO"><span class="tocnumber">5</span> <span class="toctext">How to setup/test COLO</span></a>
+<ul>
+<li class="toclevel-2"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Hardware_requirements"><span class="tocnumber">5.1</span> <span class="toctext">Hardware requirements</span></a></li>
+<li class="toclevel-2"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Network_link_topology"><span class="tocnumber">5.2</span> <span class="toctext">Network link topology</span></a></li>
+<li class="toclevel-2"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Test_environment_prepare"><span class="tocnumber">5.3</span> <span class="toctext">Test environment prepare</span></a></li>
+<li class="toclevel-2"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Test_steps"><span class="tocnumber">5.4</span> <span class="toctext">Test steps</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1"><a href="http://wiki.qemu.org/index.php?title=Features/COLO&amp;oldid=5713#Links"><span class="tocnumber">6</span> <span class="toctext">Links</span></a></li>
+</ul>
+</td></tr></tbody></table><script type="text/javascript"> if (window.showTocToggle) { var tocShowText = "show"; var tocHideText = "hide"; showTocToggle(); } </script>
+<a name="Summary" id="Summary"></a><h1> <span class="mw-headline"> Summary </span></h1>
+<p>COLO-COarse Grain LOck Stepping<br>
+Paper: <a href="http://www.socc2013.org/home/program/a3-dong.pdf?attredirects=0" class="external text" title="http://www.socc2013.org/home/program/a3-dong.pdf?attredirects=0" rel="nofollow">academia paper in SOCC 2013</a>
+</p><p>Virtual machine (VM) replication is a well known technique for providing application-agnostic software-implemented hardware fault
+tolerance "non-stop service". COLO is a high availability solution. Both primary VM (PVM) and secondary VM (SVM) run in parallel. They
+receive the same request from client, and generate response in parallel too. If the response packets from PVM and SVM are identical, they are
+released immediately. Otherwise, a VM checkpoint (on demand) is conducted. The idea is presented in Xen summit 2012, and 2013,
+and academia paper in SOCC 2013. It's also presented in KVM forum 2013, and CLK 2015:
+<a href="http://www.linux-kvm.org/wiki/images/1/1d/Kvm-forum-2013-COLO.pdf" class="external text" title="http://www.linux-kvm.org/wiki/images/1/1d/Kvm-forum-2013-COLO.pdf" rel="nofollow">Kvm-forum-2013-COLO.pdf</a><br>
+</p><p>COLO Framework:<br>
+<a href="http://wiki.qemu.org/File:Kvm-colo.jpg" class="image" title="File:kvm-colo.jpg"><img alt="File:kvm-colo.jpg" src="./Features_COLO - QEMU_files/Kvm-colo.jpg" width="549" height="310" border="0"></a><br>
+</p>
+<a name="Components" id="Components"></a><h1> <span class="mw-headline"> Components </span></h1>
+<ul><li> COLO Block Replication (Please refer to <a href="http://wiki.qemu.org/Features/BlockReplication" class="external text" title="http://wiki.qemu.org/Features/BlockReplication" rel="nofollow">BlockReplication</a>)
+</li></ul>
+<dl><dd> When primary VM writes data into image, the colo disk manger captures this data<br>
+</dd><dd> and send it to secondary VM’s which makes sure the context of secondary VM's image is consentient with<br>
+</dd><dd> the context of primary VM 's image.
+</dd></dl>
+<ul><li> COLO framework: COLO Checkpoint/Failover Controller 
+</li></ul>
+<dl><dd> Modifications of save/restore flow to realize continuous migration, to make sure the state of VM in Secondary side 
+</dd><dd> always be consistent with VM in Primary side.
+</dd></dl>
+<ul><li> COLO Proxy:
+</li></ul>
+<dl><dd> Delivers packets to Primary and Seconday, and then compare the reponse from both side. Then decide whether to 
+</dd><dd> start a checkpoint according to some rules.
+</dd></dl>
+<a name="Current_Status" id="Current_Status"></a><h1> <span class="mw-headline"> Current Status </span></h1>
+<pre>* Copyright (c) 2016 HUAWEI TECHNOLOGIES CO.,LTD.
+* Copyright (c) 2016 FUJITSU LIMITED
+* Copyright (c) 2016 Intel Corporation
+</pre>
+<p>Github:(Checkout to latest colo branch)
+</p>
+<dl><dd><a href="https://github.com/Pating/qemu" class="external text" title="https://github.com/Pating/qemu" rel="nofollow">COLO replication branch</a> 
+</dd><dd><a href="https://github.com/coloft/qemu" class="external text" title="https://github.com/coloft/qemu" rel="nofollow">COLO framework branch</a>
+</dd><dd><a href="https://github.com/zhangckid/qemu" class="external text" title="https://github.com/zhangckid/qemu" rel="nofollow">colo-proxy branch</a>
+</dd></dl>
+<a name="Failover_command" id="Failover_command"></a><h1> <span class="mw-headline"> Failover command </span></h1>
+<p>We provide a qmp command:
+</p>
+<pre>x-colo-lost-heartbeat</pre>
+<p>This command will tell COLO that heartbeat is lost. COLO will do some action accordingly. External heartbeat modules can use this qmp command to communicate with COLO. Users can choose whatever heartbeat implementation they want.
+</p><p>Failover rule:<br>
+TODO:
+</p>
+<a name="How_to_setup.2Ftest_COLO" id="How_to_setup.2Ftest_COLO"></a><h1> <span class="mw-headline"> How to setup/test COLO </span></h1>
+<a name="Hardware_requirements" id="Hardware_requirements"></a><h3> <span class="mw-headline"> <b>Hardware requirements</b> </span></h3>
+<p>There is at least one directly connected nic to forward the network requests from client to secondary vm.
+The directly connected nic must not be used by any other purpose. you should have directly connected nic for 
+each guest nic. If you don't have enouth directly connected nic, you can use vlan.
+</p>
+<a name="Network_link_topology" id="Network_link_topology"></a><h3> <span class="mw-headline"> <b>Network link topology</b> </span></h3>
+<pre>=================================normal ======================================
+                                +--------+
+                                |client  |
+         master                 +----+---+                    slave
+-------------------------+           |            + -------------------------+
+   PVM                   |           +            |                          |
++-------+         +----[eth0]-----[switch]-----[eth0]---------+              |
+|guest  |     +---+-+    |                        |       +---+-+            |
+|     [tap0]--+ br0 |    |                        |       | br0 |            |
+|       |     +-----+  [eth1]-----[forward]----[eth1]--+  +-----+     SVM    |
++-------+                |                        |    |            +-------+|
+                         |                        |    |  +-----+   | guest ||
+                       [eth2]---[checkpoint]---[eth2]  +--+br1  |-[tap0]    ||
+                         |                        |       +-----+   |       ||
+                         |                        |                 +-------+|
+-------------------------+                        +--------------------------+
+e.g.
+master:
+br0: 192.168.0.33
+eth1: 192.168.1.33
+eth2: 192.168.2.33
+
+slave:
+br0: 192.168.0.88
+br1: no ip address
+eth1: 192.168.1.88
+eth2: 192.168.2.88
+NOTE: br0 is setup by adminitrator but br1 is setup by colo now.
+</pre>
+<pre>===========================after failover=====================================
+                                +--------+
+                                |client  |
+    master (dead)               +----+---+                 slave (alive)
+-------------------------+           |            ---------------------------+
+  PVM                    |           +            |                          |
++-------+         +----[eth0]-----[switch]-----[eth0]-------+                |
+|guest  |     +---+-+    |                        |     +---+-+              |
+|     [tap0]--+ br0 |    |                        |     | br0 +--+           |
+|       |     +-----+  [eth1]-----[forward]----[eth1]   +-----+  |     SVM   |
++-------+                |                        |              |  +-------+|
+                         |                        |     +-----+  |  | guest ||
+                       [eth2]---[checkpoint]---[eth2]   |br1  |  +[tap0]    ||
+                         |                        |     +-----+     |       ||
+                         |                        |                 +-------+|
+-------------------------+                        +--------------------------+
+</pre>
+<a name="Test_environment_prepare" id="Test_environment_prepare"></a><h3> <span class="mw-headline"> <b>Test environment prepare</b> </span></h3>
+<ul><li> Prepare host kernel
+</li></ul>
+<dl><dd>colo-proxy kernel module need cooperate with linux kernel.
+</dd><dd>You should patch <a href="https://github.com/coloft/colo-proxy/blob/master/patch4kernel/0001-colo-patch-for-kernel.patch" class="external text" title="https://github.com/coloft/colo-proxy/blob/master/patch4kernel/0001-colo-patch-for-kernel.patch" rel="nofollow">colo-patch-for-kernel.patch</a> into kernel codes, 
+</dd><dd>then compile kernel and intall the new kernel (Recommend <a href="https://www.kernel.org/" class="external text" title="https://www.kernel.org/" rel="nofollow">kernel-3.18.10</a>)
+</dd></dl>
+<ul><li> Proxy module
+<ul><li> proxy module is used for network packets compare.
+</li></ul>
+</li></ul>
+<pre># git clone https://github.com/coloft/colo-proxy.git
+# cd ./colo-proxy
+# make
+# make install
+</pre>
+<ul><li> Modified <a href="https://github.com/coloft/iptables.git" class="external text" title="https://github.com/coloft/iptables.git" rel="nofollow">iptables</a>
+<ul><li> We have add a new rule to iptables command.
+</li></ul>
+</li></ul>
+<pre># git clone https://github.com/coloft/iptables.git
+# cd ./iptables
+# git checkout colo
+# ./autogen.sh &amp;&amp; ./configure
+# make &amp;&amp; make install
+</pre>
+<ul><li>Modified arptables
+<ul><li> Please get the latest <a href="http://git.netfilter.org/arptables" class="external text" title="http://git.netfilter.org/arptables" rel="nofollow">arptables</a> and then compile and install
+</li></ul>
+</li></ul>
+<ul><li> Qemu colo
+<ul><li> Checkout the latest colo branch from <a href="https://github.com/coloft/qemu/tree/colo-v1.5-basic" class="external text" title="https://github.com/coloft/qemu/tree/colo-v1.5-basic" rel="nofollow">colo-v1.5-basic</a> or
+<ul><li><a href="https://github.com/coloft/qemu/tree/colo-v1.5-developing" class="external text" title="https://github.com/coloft/qemu/tree/colo-v1.5-developing" rel="nofollow">colo-v1.5-developing(More features)</a>
+</li></ul>
+</li></ul>
+</li></ul>
+<pre># cd qemu
+# ./configure --target-list=x86_64-softmmu --enable-colo
+# make
+</pre>
+<ul><li> Set Up the Bridge and network environment
+<ul><li> You must setup you network environment like above picture(<b>Network link topology</b> Normal).
+</li></ul>
+</li></ul>
+<pre>In master, setup a bridge br0, using command brctl, like:
+# ifconfig eth0 down
+# ifconfig eth0 0.0.0.0
+# brctl addbr br0
+# brctl addif br0 eth0
+# ifconfig br0 192.168.0.33 netmask 255.255.255.0
+# ifconfig eth0 up
+In slave, setup br0 like master side
+</pre>
+<ul><li> Qemu-ifup/Qemu-ifdown
+<ul><li> We need a script to bring up the TAP interface.
+</li><li> a qemu-ifdown script is needed to reset you networking configuration which is configured by qemu-ifup script
+</li></ul>
+</li></ul>
+<dl><dd>You can find this info from <a href="http://en.wikibooks.org/wiki/QEMU/Networking" class="external free" title="http://en.wikibooks.org/wiki/QEMU/Networking" rel="nofollow">http://en.wikibooks.org/wiki/QEMU/Networking</a>.
+</dd></dl>
+<pre>NOTE: Don't forget to change this script file permission to be executable
+
+Master:
+root@master# cat /etc/qemu-ifup
+#!/bin/sh
+switch=br0
+if [ -n "$1" ]; then
+         ip link set $1 up
+         brctl addif ${switch} $1
+fi
+root@master# cat /etc/qemu-ifdown
+!/bin/sh
+switch=br0
+if [ -n "$1" ]; then
+        brctl delif ${switch} $1
+fi
+Slave:
+like Master side
+</pre>
+<a name="Test_steps" id="Test_steps"></a><h3> <span class="mw-headline"> <b>Test steps</b> </span></h3>
+<p>(<i><b>Note: We apply two scripts to help completing step (1) ~ step (2), <a href="https://github.com/coloft/colo-test/blob/master/primary-colo.sh" class="external text" title="https://github.com/coloft/colo-test/blob/master/primary-colo.sh" rel="nofollow">primary-colo.sh</a> <a href="https://github.com/coloft/colo-test/blob/master/secondary-colo.sh" class="external text" title="https://github.com/coloft/colo-test/blob/master/secondary-colo.sh" rel="nofollow">secondary-colo.sh</a>)</b></i>
+</p>
+<ul><li>(1) Load modeule
+</li></ul>
+<pre># modprobe xt_PMYCOLO (For slave side, modprobe xt_SECCOLO)
+# modprobe nf_conntrack_colo (Other colo module will be automatically loaded by
+script colo-proxy-script.sh)
+# modprobe xt_mark
+# modprobe kvm-intel
+</pre>
+<ul><li>(2) Startup qemu
+</li></ul>
+<ul><li><i>Master side:</i>
+</li></ul>
+<pre># x86_64-softmmu/qemu-system-x86_64 -machine pc-i440fx-2.3,accel=kvm,usb=off \
+-netdev tap,id=hn0,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown,\
+colo_script=./scripts/colo-proxy-script.sh,forward_nic=eth1 -device virtio-net-pci,id=net-pci0,netdev=hn0 \
+-boot c -drive if=virtio,id=disk1,driver=quorum,read-pattern=fifo,cache=none,aio=native,\
+children.0.file.filename=/mnt/sdb/pure_IMG/redhat/redhat-7.0.img,children.0.driver=raw \
+-vnc&nbsp;:7 -m 2048 -smp 2 -device piix3-usb-uhci -device usb-tablet -monitor stdio -S
+</pre>
+<ul><li><i>Slave side:</i>
+</li></ul>
+<pre># qemu-img create -f qcow2 /mnt/ramfs/active_disk.img 10G
+
+# qemu-img create -f qcow2 /mnt/ramfs/hidden_disk.img 10G
+
+# x86_64-softmmu/qemu-system-x86_64 -machine pc-i440fx-2.3,accel=kvm,usb=off \
+-netdev tap,id=hn0,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown,\
+colo_script=./scripts/colo-proxy-script.sh,forward_nic=eth1 -device virtio-net-pci,id=net-pci0,netdev=hn0 \
+-drive if=none,driver=raw,file=/mnt/sdb/pure_IMG/redhat/redhat-7.0.img,id=colo1,cache=none,aio=native \
+-drive if=virtio,driver=replication,mode=secondary,throttling.bps-total-max=70000000,\
+file.file.filename=/mnt/ramfs/active_disk.img,file.driver=qcow2,\
+file.backing.file.filename=/mnt/ramfs/hidden_disk.img,\
+file.backing.driver=qcow2,\
+file.backing.backing.backing_reference=colo1,\
+file.backing.allow-write-backing-file=on \
+-vnc&nbsp;:7 -m 2048 -smp 2 -device piix3-usb-uhci -device usb-tablet -monitor stdio -incoming tcp:0:8888
+</pre>
+<pre> <i><b>Note:</b></i>
+ <i>1. The export name in secondary QEMU command line is the secondary disk's id. In the expampe, it is colo1.</i>
+ <i>2. The export name for primary disk is not in the command line. It is in child_add's argument. Please see below.</i>
+ <i>3. The export name for the same disk must be the same</i>
+ <i>4. The qmp command nbd-server-start and nbd-server-add must be run before running the qmp command migrate on primary QEMU</i>
+ <i>5. Don't use nbd-server-start's other options</i>
+ <i>6. Active disk, hidden disk and nbd target's length should be the same.</i>
+ <i>7. It is better to put active disk and hidden disk in ramdisk.</i>
+ <i>8. It is all a single argument to -drive, and you should ignore the leading whitespace.</i>
+</pre>
+<ul><li>(3) On Secondary VM's QEMU monitor, issue command (This command must be run before command in step (4))
+</li></ul>
+<pre>(qemu) nbd_server_start 192.168.2.88:8889
+(qemu) nbd_server_add -w colo1
+</pre>
+<ul><li>(4) On Primary VM's QEMU monitor, issue command:
+</li></ul>
+<pre>(qemu) child_add disk1 child.driver=replication,child.mode=primary,child.file.host=192.168.2.88,child.file.port=8889,child.file.export=colo1,child.file.driver=nbd,child.ignore-errors=on
+(qemu) migrate_set_capability colo on
+(qemu) migrate tcp:192.168.2.88:8888
+</pre>
+<pre> <i><b>Note:</b></i>
+ <i>1. There should be only one NBD Client.</i>
+ <i>2. host is the secondary physical machine's hostname or IP</i>
+ <i>3. Each disk must have its own export name.</i>
+</pre>
+<ul><li>(5) Done
+<ul><li> You will see two runing VMs, whenever you make changes to PVM, SVM will be synced.
+</li></ul>
+</li></ul>
+<ul><li>(6) Failover test
+<ul><li> You can kill SVM (PVM) and run 'colo_lost_heartbeat' in PVM's (SVM's) monitor at the same time, then PVM (SVM) will failover and client will not feel this change.
+</li></ul>
+</li></ul>
+<ul><li> For Questions/Issues, please contact: Zhang Hailiang &lt;zhang.zhanghailiang@huawei.com&gt;;Yang Hongyang &lt;yanghy@cn.fujitsu.com&gt;; Wen Congyang &lt;wency@cn.fujitsu.com&gt;
+</li></ul>
+<a name="Links" id="Links"></a><h1> <span class="mw-headline"> Links </span></h1>
+<ul><li> <a href="http://wiki.xen.org/wiki/COLO_-_Coarse_Grain_Lock_Stepping" class="external text" title="http://wiki.xen.org/wiki/COLO_-_Coarse_Grain_Lock_Stepping" rel="nofollow">COLO on Xen</a>
+</li></ul>
+
+<!-- 
+NewPP limit report
+Preprocessor node count: 50/1000000
+Post-expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Expensive parser function count: 0/100
+-->
+<div class="printfooter">
+Retrieved from "<a href="http://wiki.qemu.org/Features/COLO">http://wiki.qemu.org/Features/COLO</a>"</div>
+						<!-- end content -->
+					</div><!-- end of MAINCONTENT div -->	
+	
+	</div><!-- end of MBODY div -->
+	<div class="visualClear"></div>
+	<div id="footer"><table><tbody><tr><td align="left" width="1%" nowrap="nowrap">
+		<div id="f-copyrightico"><a href="http://www.gnu.org/licenses/old-licenses/fdl-1.2.txt"><img src="./Features_COLO - QEMU_files/gnu-fdl.png" alt="GNU Free Documentation License 1.2"></a></div></td><td align="center">
+			<ul id="f-list">
+					<li id="f-copyright">Content is available under <a href="http://www.gnu.org/licenses/old-licenses/fdl-1.2.txt" class="external " title="http://www.gnu.org/licenses/old-licenses/fdl-1.2.txt">GNU Free Documentation License 1.2</a>.<br>
+QEMU is a trademark of Fabrice Bellard.<br>
+Hosting generously provided by <a href="http://www.osuosl.org/">OSUOSL</a>.</li>
+</ul></td>
+<td align="right" width="1%" nowrap="nowrap"><div id="f-poweredbyico"><a rel="publisher" href="https://plus.google.com/101344524535025574253/" style="text-decoration: none;"><img src="./Features_COLO - QEMU_files/gplus-32.png" width="32" height="32" style="border: 0;"></a></div></td>
+<td align="right" width="1%" nowrap="nowrap"><div id="f-poweredbyico"><a href="http://www.mediawiki.org/"><img src="./Features_COLO - QEMU_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki"></a></div></td></tr></tbody></table>
+	</div><!-- end of the FOOTER div -->
+</div><!-- end of the CONTAINER div -->
+
+		<script type="text/javascript">if (window.runOnloadHook) runOnloadHook();</script>
+<!-- Served in 0.165 secs. -->
+
+
+</body></html>
