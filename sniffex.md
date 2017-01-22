@@ -61,7 +61,11 @@ Similar to the Internet header, the TCP header can be variable length. The lengt
 ```
 To find out how much payload there is:
 
-Take the IP \*total* length field - "ip_len" in "struct sniff_ip" - and, first, check whether it's less than "IP_HL(ip)\*4" (after you've checked whether "IP_HL(ip)" is >= 5).  If it is, you have a malformed IP datagram. Otherwise, subtract "IP_HL(ip)\*4" from it; that gives you the length of the TCP segment, including the TCP header.  If that's less than "TH_OFF(tcp)\*4" (after you've checked whether "TH_OFF(tcp)" is >= 5), you have a malformed TCP segment. Otherwise, subtract "TH_OFF(tcp)\*4" from it; that gives you the length of the TCP payload.
+Take the IP \*total\* length field - "ip_len" in "struct sniff_ip" - and, first, check whether it's less than "IP_HL(ip)\*4" (after you've checked whether "IP_HL(ip)" is >= 5).  If it is, you have a malformed IP datagram.
+
+Otherwise, subtract "IP_HL(ip)\*4" from it; that gives you the length of the TCP segment, including the TCP header.  If that's less than "TH_OFF(tcp)\*4" (after you've checked whether "TH_OFF(tcp)" is >= 5), you have a malformed TCP segment.
+
+Otherwise, subtract "TH_OFF(tcp)\*4" from it; that gives you the length of the TCP payload.
 ```
 /*
  * sniffex.c
