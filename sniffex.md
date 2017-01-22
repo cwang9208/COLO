@@ -48,15 +48,15 @@ Similar to the Internet header, the TCP header can be variable length. The lengt
 ## Payload
 ```
 ---------------------------------------------------------------------------------------------------------------------------------
-|			       		 Variable						 		|						Location (in bytes)	     	 			|
+|                         Variable                              |                         Location (in bytes)                   |
 ---------------------------------------------------------------------------------------------------------------------------------
-|		  			   sniff_ethernet							| 							   X			   			 		|
+|                       sniff_ethernet                          |                                X                              |
 ---------------------------------------------------------------------------------------------------------------------------------
-|				   		 sniff_ip								|						 X + SIZE_ETHERNET			 			|
+|                         sniff_ip                              |                          X + SIZE_ETHERNET                    |
 ---------------------------------------------------------------------------------------------------------------------------------
-|				   		 sniff_tcp								| 				X + SIZE_ETHERNET + {IP header length}			|
+|                         sniff_tcp                             |                 X + SIZE_ETHERNET + {IP header length}        |
 ---------------------------------------------------------------------------------------------------------------------------------
-|				   		 payload								| X + SIZE_ETHERNET + {IP header length} + {TCP header length}	|
+|                          payload                              | X + SIZE_ETHERNET + {IP header length} + {TCP header length}  |
 ---------------------------------------------------------------------------------------------------------------------------------
 ```
 To find out how much payload there is:
