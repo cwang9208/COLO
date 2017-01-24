@@ -14,7 +14,15 @@ What is the range of host addresses for this subnet. Ans: The bits in the addres
 and the largest value is 10000011.00000101.11111101.11111111 = 131.5.253.255
 
 ```
-# route
+NAME
+       route - show / manipulate the IP routing table
+
+OPTIONS
+       -n     show numerical addresses instead of trying to determine symbolic
+              host  names.  This  is useful if you are trying to determine why
+              the route to your nameserver has vanished.
+
+
 Kernel IP routing table
 Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 default         cisco3560x-202. 0.0.0.0         UG    0      0        0 eth0
