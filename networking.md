@@ -1,5 +1,33 @@
 ## Basic IP Routing
-![routing](https://github.com/wangchenghku/COLO/blob/master/.resources/routing.png)
+```
+      200.1.2.1
+     +--------+ 
+     |        |         
+     |        | A
+     |        |            
+     +--------+
+          |
+          |                                            NETWORK 200.1.2
+          +---------------------------------------------------------------------
+                                                                |
+                                                     200.1.2.3  |
+                                                            +--------+ 
+                                                            |        |         
+                                                            |        | C
+                                                            |        |            
+                                                            +--------+
+                                                                |      200.1.3.10
+     200.1.3.1                                                  |
+          +---------------------------------------------------------------------
+          |                                            NETWORK 200.1.3
+          |
+     +--------+ 
+     |        |         
+     |        | D
+     |        |            
+     +--------+
+```
+
 Device C is acting as a router between these two networks. A router is a device that chooses different paths for the network packets, based on the addressing of the IP frame it is handling. Different routes connect to different different networks. The router will have more than one address as each route is part of a different network.
 
 ### Direct vs. Indirect Routing
@@ -43,6 +71,19 @@ The IFace column, is the network interface that the packets utilizing this route
 
 ### Sockets
 Sockets can be used to connect together VLANs from multiple QEMU processes. The way this works is that one QEMU process connects to a socket in another process. When data appears on the VLAN in the first QEMU process, it is forwarded to the corresponding VLAN in the other QEMU process, and vice versa.
+```
+ +------------+                                      +------------+
+ |   Guest A  |                                      |   Guest B  |
+ |            |                                      |            |
+ |   +----+   |                                      |   +----+   |
+ |   |vNIC|   |                                      |   |vNIC|   |
+ +------------+                                      +------------+
+       ^        +--------+                +--------+        ^
+       |        |        |                |        |        |
+       +------->+ VLAN 1 +<--> Socket <-->+ VLAN 2 +<-------+
+                |        |                |        |
+                +--------+                +--------+
+```
 For example, you might start Guest A with
 ```
 qemu -net nic -net socket, listen=:8010...
@@ -61,7 +102,19 @@ This QEMU process would then have a guest with an NIC connected to VLAN 2, which
 ### TAP interfaces
 A VLAN can be made available through a TAP device in the host OS. Any data transmitted through this device will appear on a VLAN in the QEMU process and thus be received by other interfaces on the VLAN and data sent to the VLAN will be received by the TAP device.
 This works using the kernel's TUN/TAP device driver. This driver basically allows a users-space application to obtain a file descriptor, which is connected to a network device.
-
+```
+                                                    +-------+
+                                                    |  TAP  |
+                                                    | Device|
+                                                    |(QTAP0)|
+                                                    +---+---+
+ +-------------+                                        |
+ |   Guest OS  |        +------+                    +---+-----+
+ |             |        |      |                    | Kernel  |
+ |   +----+    |<------>+ VLAN +<-->   File    <--->+ TUN/TAP |      
+ |   |vNIC|    |        |      |     Descriptor     | Driver  |
+ +-------------+        +------+                    +---------+
+```
 - What is the TUN ?
 
   The TUN is Virtual Point-to-Point network device. TUN driver was designed as low level kernel support for IP tunneling. It provides to userland application two interfaces:
@@ -108,6 +161,28 @@ LAN (or MAC or physical) address:
 - B receives ARP packet, replies to A with its (B’s) physical layer address
 
 #### Routing to another LAN
+```
+ +-----+ 74-29-9C-E8-FF-55                                                   88-B2-2F-54-1A-0F +-----+
+ |     |--+                              E6-E9-00-17-BB-4B                                  +--|     |
+ | host|  |<--------------+                ^                                 +------------->|  | host|
+ |     |--+               |                |            1A-23-F9-CD-06-9B    |              +--|     |
+ +-----+                  |                |                ^                |                 +-----+
+    ^                   +------------+     | +------------+ |     +------------+                  ^
+    |                   |            |    +--||          ||--+    |            |                  |
+111.111.111.111         |   LAN 1    |----|  ||  ROUTER  ||  |----|   LAN 2    |           222.222.222.221
+  A                     |            |    +--||          ||--+    |            |
+                        |            |       +------------+       |            |
+                        +------------+        ^          ^        +------------+
+  111.111.111.112         |                   |          |                   |                222.222.222.222
+   +-----+                |                   |     222.222.222.220          |                  +-----+
+   |     |--+             |             111.111.111.110                      |               +--|     |
+   | host|  |<------------+                  R                               +-------------->|  | host|
+   |     |--+                                                                                +--|     |
+   +-----+ ^                                                                                  ^ +-----+
+           |                                                                                  |
+        CC-49-DE-D0-AB-7D                                                              49-BD-D2-C7-56-2A
+                                                                                                     B
+```
 - A creates IP packet with source A, destination B
 - Routing: A finds that R is next hop
 - A uses ARP to get R’s physical layer address for 111.111.111.110
