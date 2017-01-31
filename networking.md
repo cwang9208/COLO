@@ -158,7 +158,7 @@ LAN (or MAC or physical) address:
 - A knows B’s IP address, want to learn physical address of B
 - A broadcast ARP query pkt, containing B’s IP address
   - All machines on LAN receive ARP query
-- B receives ARP packet, replies to A with its (B’s) physical layer address
+- B receives ARP packet, replies to A with its (B's) physical layer address
 
 #### Routing to another LAN
 ```
@@ -185,14 +185,14 @@ LAN (or MAC or physical) address:
 ```
 - A creates IP packet with source A, destination B
 - Routing: A finds that R is next hop
-- A uses ARP to get R’s physical layer address for 111.111.111.110
+- A uses ARP to get R's physical layer address for 111.111.111.110
 - A creates Ethernet frame with
   - R’s physical address as dest
   - A, B IP datagram
 - A's data link layer sends Ethernet frame
 - R's data link layer receives Ethernet frame
 - R removes IP datagram from Ethernet frame, sees its destined to B
-- R uses ARP to get B’s physical layer address
+- R uses ARP to get B's physical layer address
 - R creates frame containing A-to-B IP datagram sends to B
 
 ### Interconnecting LANs
