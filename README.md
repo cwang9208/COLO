@@ -45,12 +45,19 @@ auto eth0
 iface eth0 inet static
 	address 10.22.1.11
 	# post-up command
-	# Run  command  after  bringing the interface up.
+	# Run command after bringing the interface up.
 
+# set up apt-get to use a http-proxy
 # vi /etc/apt/apt.conf
-Acquire::http::proxy "http://10.22.1.1:3128";
 Acquire::https::proxy "http://10.22.1.1:3128";
-Acquire::ftp::proxy "http://10.22.1.1:3128";
+
+# if you would like apt-get and other applications for instance wget, to use a http-proxy.
+# Add these lines to the bottom of your ~/.bashrc file
+http_proxy=http://10.22.1.1:3128
+export http_proxy
+
+# Save the file. Source the ~/.bashrc file:
+source ~/.bashrc
 ```
 
 - NFS
