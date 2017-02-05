@@ -44,7 +44,9 @@ hkucs-PowerEdge-R430:~$ x86_64-softmmu/qemu-system-x86_64 -m 2048 -smp 2 -hda ub
 auto eth0
 iface eth0 inet static
 	address 10.22.1.11
-	netmask 255.255.255.0
+	# post-up command
+	# Run  command  after  bringing the interface up.
+
 # vi /etc/apt/apt.conf
 Acquire::http::proxy "http://10.22.1.1:3128";
 Acquire::https::proxy "http://10.22.1.1:3128";
