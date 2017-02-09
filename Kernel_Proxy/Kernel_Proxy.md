@@ -1,4 +1,4 @@
-## How to setup/test COLO
+## How to setup/test COLO (Ubuntu 14.04.1 64-bit)
 
 ### Hardware requirements
 There is at least one directly connected nic to forward the network requests from client to secondary vm. The directly connected nic must not be used by any other purpose.
