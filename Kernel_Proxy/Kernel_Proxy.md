@@ -69,7 +69,8 @@ NOTE: br0 is setup by adminitrator but br1 is setup by colo now.
 # ./autogen.sh && ./configure
 # make && make install
 ```
-- Modified arptables
+- libnftnl
+- arptables
   - Please get the latest arptables and then compile and install
 
 - Qemu colo
