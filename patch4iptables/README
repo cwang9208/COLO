@@ -1,0 +1,5 @@
+NOTE:
+We don't maintian patch4iptables in colo-proxy tree anymore.
+
+Please refer https://github.com/coloft/iptables.git 
+to get the latest iptables for colo tree
