@@ -1,0 +1,93 @@
+From 062e2d075819e810a1b2eac6a4cc11b66e205cf0 Mon Sep 17 00:00:00 2001
+From: Gao feng <gaofeng@cn.fujitsu.com>
+Date: Tue, 27 Jan 2015 17:33:09 +0800
+Subject: [PATCH] colo patch for kernel
+
+Signed-off-by: zhanghailiang <zhang.zhanghailiang@huawei.com>
+---
+ include/net/netfilter/nf_conntrack_extend.h        |  2 ++
+ include/uapi/linux/netfilter/nf_conntrack_common.h |  4 ++++
+ include/uapi/linux/netfilter/nfnetlink.h           |  3 ++-
+ include/uapi/linux/netfilter/xt_COLO.h             | 20 +++++++++++++++++++
+ 4 files changed, 27 insertions(+), 1 deletion(-)
+ create mode 100644 include/uapi/linux/netfilter/xt_COLO.h
+
+diff --git a/include/net/netfilter/nf_conntrack_extend.h b/include/net/netfilter/nf_conntrack_extend.h
+index 55d1504..ad577cd 100644
+--- a/include/net/netfilter/nf_conntrack_extend.h
++++ b/include/net/netfilter/nf_conntrack_extend.h
+@@ -30,6 +30,7 @@ enum nf_ct_ext_id {
+ #if IS_ENABLED(CONFIG_NETFILTER_SYNPROXY)
+ 	NF_CT_EXT_SYNPROXY,
+ #endif
++	NF_CT_EXT_COLO,
+ 	NF_CT_EXT_NUM,
+ };
+ 
+@@ -43,6 +44,7 @@ enum nf_ct_ext_id {
+ #define NF_CT_EXT_TIMEOUT_TYPE struct nf_conn_timeout
+ #define NF_CT_EXT_LABELS_TYPE struct nf_conn_labels
+ #define NF_CT_EXT_SYNPROXY_TYPE struct nf_conn_synproxy
++#define NF_CT_EXT_COLO_TYPE struct nf_conn_colo
+ 
+ /* Extensions: optional stuff which isn't permanently in struct. */
+ struct nf_ct_ext {
+diff --git a/include/uapi/linux/netfilter/nf_conntrack_common.h b/include/uapi/linux/netfilter/nf_conntrack_common.h
+index 319f471..6e44fbd 100644
+--- a/include/uapi/linux/netfilter/nf_conntrack_common.h
++++ b/include/uapi/linux/netfilter/nf_conntrack_common.h
+@@ -91,6 +91,10 @@ enum ip_conntrack_status {
+ 	/* Conntrack got a helper explicitly attached via CT target. */
+ 	IPS_HELPER_BIT = 13,
+ 	IPS_HELPER = (1 << IPS_HELPER_BIT),
++
++	/* Conntrack is a colo template */
++	IPS_COLO_TEMPLATE_BIT = 14,
++	IPS_COLO_TEMPLATE = (1 << IPS_COLO_TEMPLATE_BIT),
+ };
+ 
+ /* Connection tracking event types */
+diff --git a/include/uapi/linux/netfilter/nfnetlink.h b/include/uapi/linux/netfilter/nfnetlink.h
+index 354a7e5..1acfc0c 100644
+--- a/include/uapi/linux/netfilter/nfnetlink.h
++++ b/include/uapi/linux/netfilter/nfnetlink.h
+@@ -57,7 +57,8 @@ struct nfgenmsg {
+ #define NFNL_SUBSYS_CTHELPER		9
+ #define NFNL_SUBSYS_NFTABLES		10
+ #define NFNL_SUBSYS_NFT_COMPAT		11
+-#define NFNL_SUBSYS_COUNT		12
++#define NFNL_SUBSYS_COLO		12
++#define NFNL_SUBSYS_COUNT		13
+ 
+ /* Reserved control nfnetlink messages */
+ #define NFNL_MSG_BATCH_BEGIN		NLMSG_MIN_TYPE
+
+diff --git a/include/uapi/linux/netfilter/xt_COLO.h b/include/uapi/linux/netfilter/xt_COLO.h
+new file mode 100644
+index 0000000..8b510ab
+--- /dev/null
++++ b/include/uapi/linux/netfilter/xt_COLO.h
+@@ -0,0 +1,20 @@
++#ifndef _XT_COLO_TARGET_H
++#define _XT_COLO_TARGET_H
++
++#include <linux/types.h>
++
++struct xt_colo_primary_info {
++	u32	index; /* equal to PID of the sending VM process. */
++
++	char		forward_dev[256];
++	/* for kernel module internal use only */
++	struct colo_primary *colo __attribute__((aligned(8)));
++};
++
++struct xt_colo_secondary_info {
++	u32	index;  /* equal to PID of the sending VM process. */
++
++	/* for kernel module internal use only */
++	struct colo_secondary   *colo __attribute__((aligned(8)));
++};
++#endif
+-- 
+2.1.0
+
