@@ -26,6 +26,12 @@ master:
 br0: 192.168.0.33
 eth1: 192.168.1.33
 eth2: 192.168.2.33
+
+slave:
+br0: 192.168.0.88
+br1: no ip address
+eth1: 192.168.1.88
+eth2: 192.168.2.88
 ```
 NOTE: br0 is setup by adminitrator but br1 is setup by colo now.
 
