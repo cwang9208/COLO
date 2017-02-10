@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # usage:
 # (1) change @disk_path to your own path of disk image 
 # (2) set @nbdserver to your nbdserver ip:prot
