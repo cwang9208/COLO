@@ -8,7 +8,7 @@ LDAP stands for Lightweight Directory Access Protocol. As the name suggests, it 
 
 This section gives an overview of LDAP from a user's perspective.
 
-*What kind of information can be stored in the directory?* The LDAP information model is based on *entries*. An entry is a collection of attributes that has a globally-unique Distinguished Name (DN). The DN is used to refer to the entry unambiguously. Each of the entry's attributes has a *type* and one or more *values*. The types are typically mnemonic strings, like `"cn"` for common name, or `"mail"` for email address. The syntax of values depend on the attribute type. For example, a `cn` attribute might contain the value `Babs Jensen`. A `mail` attribute might contain the value `"babs@example.com"`. A `jpegPhoto` attribute would contain a photograph in the JPEG (binary) format.
+*What kind of information can be stored in the directory?* The LDAP information model is based on *entries*. An entry is a collection of attributes that has a globally-unique Distinguished Name (DN). The DN is used to refer to the entry unambiguously. Each of the entry's attributes has a *type* and one or more *values*. The types are typically mnemonic strings, like "`cn`" for common name, or "`mail`" for email address. The syntax of values depend on the attribute type. For example, a `cn` attribute might contain the value `Babs Jensen`. A `mail` attribute might contain the value "`babs@example.com`". A `jpegPhoto` attribute would contain a photograph in the JPEG (binary) format.
 
 *How is the information arranged?* The tree may be arranged based upon Internet domain names.
 ![LDAP directory tree (Internet naming)](https://github.com/wangchenghku/COLO/blob/master/apps/ldap/intro_dctree.png)
