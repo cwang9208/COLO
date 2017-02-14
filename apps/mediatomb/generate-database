@@ -30,7 +30,6 @@ sleep 1
 
 # generate xml.
 cp .mediatomb/config.xml .mediatomb/orig.xml
-# transcoding settings with mencoder
 sed -e 's/<transcoding enabled="no">/<transcoding enabled="yes">/g' .mediatomb/config.xml > bak.xml
 sed -e 's/<profile name="vlcmpeg" enabled="no"/<profile name="vlcmpeg" enabled="yes"/g' bak.xml > bak2.xml
 sed '/"vlc"/d' bak2.xml > bak.xml
@@ -43,8 +42,3 @@ echo ""
 echo "Adding an avi file to mediatomb to prepare for benchmark. You must wait for about 10 seconds, and then manually \"Ctrl C\" on this script."
 echo ""
 ./install/bin/mediatomb -i $IP -p 7000 -m $PWD --add $COLO/apps/mediatomb/mediatomb-sample.avi &> out.txt
-
-# --ip or -i         ip address to bind to
-# --port or -p       server port
-# --add or -a        add the given file/directory
-# the -m $PWD option is for setting up the server with the config database COLO/apps/mediatomb/.mediatomb
