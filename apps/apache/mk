@@ -85,6 +85,7 @@ tar zxvf php-$PHP_VER.tar.gz
 cd php-$PHP_VER
 ./configure --prefix=$COLO/apps/apache/install-php --with-apxs2=$COLO/apps/apache/install/bin/apxs --disable-dom --disable-simplexml
 make -j16
+
 make install
 
 # ServerLimit is a hard limit on the number of active child processes, and must be greater than
@@ -97,6 +98,7 @@ mv httpd.conf.tmp httpd.conf
 echo "ServerName localhost" >> httpd.conf
 echo "ServerLimit 1" >> httpd.conf
 echo "ThreadsPerChild 8" >> httpd.conf
+# DocumentRoot: The directory out of which you will serve your documents.
 cp $COLO/apps/apache/test.php $COLO/apps/apache/install/htdocs/
 cp $COLO/apps/apache/test.php ~/
 
@@ -107,3 +109,36 @@ cp $COLO/apps/apache/test.php ~/
 # add php filter.
 sed -e "s/#AddType text\/html \.shtml/AddType application\/x-httpd-php \.php/g" httpd.conf > httpd.conf.tmp
 mv httpd.conf.tmp httpd.conf
+
+
+# This simple example shows how to connect, execute a query, print resulting rows and disconnect
+# from a MySQL database.
+
+# <?php
+# // Connecting, selecting database
+# $link = mysql_connect('mysql_host', 'mysql_user', 'mysql_password')
+#     or die('Could not connect: ' . mysql_error());
+# echo 'Connected successfully';
+# mysql_select_db('my_database') or die('Could not select database');
+
+# // Performing SQL query
+# $query = 'SELECT * FROM my_table';
+# $result = mysql_query($query) or die('Query failed: ' . mysql_error());
+
+# // Printing results in HTML
+# echo "<table>\n";
+# while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+#     echo "\t<tr>\n";
+#     foreach ($line as $col_value) {
+#         echo "\t\t<td>$col_value</td>\n";
+#     }
+#     echo "\t</tr>\n";
+# }
+# echo "</table>\n";
+
+# // Free resultset
+# mysql_free_result($result);
+
+# // Closing connection
+# mysql_close($link);
+# ?>
