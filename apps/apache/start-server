@@ -1,0 +1,24 @@
+#!/bin/bash
+
+killall -9 httpd server.out
+sleep 1
+killall -9 httpd server.out
+cd $COLO/apps/apache/
+rm .db -rf
+
+
+#if [ ! $1 ];
+#then
+#        echo "Usage: $0 <server port>"
+#        echo "$0 7000"
+#        exit 1;
+#fi
+
+# Usage: httpd [-f file] [-k start|restart|graceful|graceful-stop|stop]
+# Options:
+#   -f file            : specify an alternate ServerConfigFile
+
+
+$COLO/apps/apache/install/bin/apachectl -f \
+$COLO/apps/apache/install/conf/httpd.conf -k start
+sleep 1
