@@ -18,7 +18,7 @@ The meaning of the fields is as follows:
    - This record matches connection attempts using Unix-domain sockets. Without a record of this type, Unix-domain socket connections are disallowed.
 - host
    - This record matches connection attempts made using TCP/IP.
-   - Note: Remote TCP/IP connections will not be possible unless the server is started with an appropriate value for the listen_addresses configuration parameter, since the default behavior is to listen for TCP/IP connections only on the local loopback address localhost.
+   - Note: Remote TCP/IP connections will not be possible unless the server is started with an appropriate value for the `listen_addresses` configuration parameter, since the default behavior is to listen for TCP/IP connections only on the local loopback address localhost.
 
 - ***database***
   - Specifies which database name(s) this record matches. The value all specifies that it matches all databases.
