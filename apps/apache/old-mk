@@ -26,7 +26,7 @@ APR_VER=1.5.1
 UTIL_VER=1.5.4
 HTTPD_VER=2.2.11
 PCRE_VER=8.36
-APP_DIR=$MSMR_ROOT/apps/apache
+APP_DIR=$COLO/apps/apache
 
 # working folder
 cd $APP_DIR
@@ -74,7 +74,6 @@ mkdir ../install
 #./configure --prefix=$APP_DIR/install --with-included-apr --enable-mods-shared=all \
 #	--with-pcre=$APP_DIR/pcre \
 #	--enable-mpm=worker --enable-module=all
-CFLAGS="-I$XTERN_ROOT/include -L$XTERN_ROOT/dync_hook -Wl,--rpath,$XTERN_ROOT/dync_hook -lxtern-annot" \
 ./configure \
         --with-mpm=worker \
         --prefix=$APP_DIR/install \
@@ -86,7 +85,7 @@ make -j16
 make install
 
 # change conf file
-cd $MSMR_ROOT/apps/apache/install/conf
+cd $COLO/apps/apache/install/conf
 sed -e "s/Listen 80/Listen 7000/g"  httpd.conf > httpd.conf.tmp
 mv httpd.conf.tmp httpd.conf
 
