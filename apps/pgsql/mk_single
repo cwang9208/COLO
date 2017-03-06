@@ -1,0 +1,97 @@
+#!/bin/bash
+
+#
+# Copyright (c) 2014,  Regents of the Columbia University 
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other 
+# materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR 
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
+# benchmark pgbench source code in postgresql-9.3.5/contrib/pgbench/pgbench.c
+
+# variables
+APP_VER=9.3.5
+APP_DIR=$COLO/apps/pgsql/${1}
+
+
+# working folder
+cd $APP_DIR
+
+
+# remove folders
+rm -rf postgresql-$APP_VER
+rm -rf install
+
+
+# download and extract
+if [ ! -f postgresql-$APP_VER.tar.gz ]; then
+    wget http://ftp.postgresql.org/pub/source/v9.3.5/postgresql-$APP_VER.tar.gz
+fi
+tar zxvf postgresql-$APP_VER.tar.gz
+
+
+# build postgresql
+cd postgresql-$APP_VER
+mkdir ../install
+
+# Optional Packages:
+#   --with-pgport=PORTNUM   set default port number [5432]
+
+# The GNU Readline library is used by default. It allows psql (the
+# PostgreSQL command line SQL interpreter) to remember each command
+# you type, and allows you to use arrow keys to recall and edit
+# previous commands. This is very helpful and is strongly
+# recommended. If you don't want to use it then you must specify the
+# "--without-readline" option to "configure".
+# The zlib compression library is used by default. If you don't want
+# to use it then you must specify the "--without-zlib" option to
+# "configure". Using this option disables support for compressed
+# archives in pg_dump and pg_restore.
+
+./configure --prefix=$APP_DIR/install --with-pgport=${1} --without-readline --without-zlib
+make
+make install
+
+
+# build pgbench benchmark
+# pgbench is a simple program for running benchmark tests on PostgreSQL.
+# By default, pgbench tests a scenario that is loosely based on TPC-B,
+# involving five SELECT, UPDATE, and INSERT commands per transaction.
+cd contrib/pgbench
+make
+cp pgbench $APP_DIR/install/bin
+
+
+# config postgresql
+cd $APP_DIR/install
+
+# pg_ctl is a utility to initialize, start, stop, or control a PostgreSQL server.
+# Usage:
+#   pg_ctl init[db]               [-D DATADIR]
+#   pg_ctl start                  [-D DATADIR]
+#   pg_ctl stop                   [-D DATADIR]
+# Common options:
+#   -D, --pgdata=DATADIR   location of the database storage area
+bin/pg_ctl init -D $APP_DIR/install/data
+bin/pg_ctl start -D $APP_DIR/install/data
+sleep 2
+
+# createuser creates a new PostgreSQL role.
+# Usage:
+#   createuser [OPTION]... [ROLENAME]
+bin/createuser root
+
+bin/pg_ctl stop -D $APP_DIR/install/data
+
