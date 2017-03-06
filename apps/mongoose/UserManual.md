@@ -45,6 +45,12 @@ Command Line Options
          regardless script extension.  Mongoose decides which interpreter
          to use by looking at the first line of a CGI script.
 
+     -a access_log_file
+         Access log file. Default: "", no logging is done.
+
+     -e error_log_file
+         Error log file. Default: "", no errors are logged.
+
      -p listening_ports
          Comma-separated list of ports to listen on. Default: "8080"
 

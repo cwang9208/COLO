@@ -19,4 +19,5 @@ NUM_T=8
 
 cd $COLO/apps/mongoose
 
-$COLO/apps/apache/install/bin/ab -n $NUM_REQ -c $NUM_T http://$1:$2/test.php
+$COLO/apps/apache/install/bin/ab -n $NUM_REQ -c $NUM_T http://$1:$2/test.php # GET request
+# Non-2xx responses may indicate some problem
