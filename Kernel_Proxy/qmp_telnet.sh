@@ -1,6 +1,7 @@
 #!/bin/bash
 
-CMD='info status'
+CMD='{ "execute": "qmp_capabilities" }'
+SLEEP_TIME=5
 
 # command | command [ | command ...]
 # Pipe multiple commands together. The standard output of the
@@ -14,4 +15,4 @@ CMD='info status'
 # the commands by a space and the last command must be terminated
 # with either a semicolon or a newline prior to the closing brace.
 
-{ echo "$CMD"; } | telnet localhost 4444
+{ sleep $SLEEP_TIME; echo "$CMD"; sleep $SLEEP_TIME; } | telnet localhost 4444

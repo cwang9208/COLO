@@ -137,7 +137,7 @@ QMP is JSON based.
 #### Usage
 You can use the -qmp option to enable QMP. For example, the following makes QMP available on localhost port 4444:
 ```
-$ qemu [...] -qmp tcp:localhost:4444,server,nowait
+$ qemu [...] -qmp telnet:localhost:4444,server,nowait
 ```
 #### Simple Testing
 To manually test QMP one can connect with telnet and issue commands by hand:
@@ -175,4 +175,11 @@ Escape character is '^]'.
         "running": false
     }
 }
+```
+### QEMU Monitor
+When QEMU is running, it provides a monitor console for interacting with QEMU. Through various commands, the monitor allows you to inspect the running guest OS, take screenshots and audio grabs, and control various aspects of the virtual machine.
+
+The monitor can be accessed from within QEMU by CTRL-ALT-2.
+```
+$ qemu [...] -monitor telnet:localhost:4444,server,nowait
 ```
