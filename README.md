@@ -127,3 +127,52 @@ b. Active disk, hidden disk and nbd target's length should be the same.*
 ```
 - (4) Done
   - You will see two runing VMs, whenever you make changes to PVM, SVM will be synced.
+
+## Troubleshooting
+### QEMU Machine Protocol
+The QEMU Machine Protocol (QMP) allows applications to operate a QEMU instance.
+
+QMP is JSON based.
+
+#### Usage
+You can use the -qmp option to enable QMP. For example, the following makes QMP available on localhost port 4444:
+```
+$ qemu [...] -qmp tcp:localhost:4444,server,nowait
+```
+#### Simple Testing
+To manually test QMP one can connect with telnet and issue commands by hand:
+```
+$ telnet localhost 4444
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+{
+    "QMP": {
+        "version": {
+            "qemu": {
+                "micro": 50, 
+                "minor": 6, 
+                "major": 1
+            }, 
+            "package": ""
+        }, 
+        "capabilities": [
+        ]
+    }
+}
+
+{ "execute": "qmp_capabilities" }
+{
+    "return": {
+    }
+}
+
+{ "execute": "query-status" }
+{
+    "return": {
+        "status": "prelaunch", 
+        "singlestep": false, 
+        "running": false
+    }
+}
+```
