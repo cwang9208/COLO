@@ -2,7 +2,7 @@
 File postgresql.conf is read on server startup and when the server receives a SIGHUP signal.
 ```
 listen_addresses = 'localhost'		# what IP address(es) to listen on;
-									# defaults to 'localhost'; use '*' for all
+					# defaults to 'localhost'; use '*' for all
 ```
 
 ### Client Authentication
