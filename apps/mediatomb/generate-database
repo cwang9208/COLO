@@ -11,8 +11,8 @@ else
 	IP=$1
 fi
 
-echo "Generating mediatomb database on IP $IP..."
-echo "./e.g., ./$0 10.0.3.111"
+echo "Generating mediatomb database on IP $IP... If you run it in a virtual machine, please give it an arugment."
+echo "./e.g., ./$0 10.22.1.111"
 
 # Start server to prepare
 if [ ! -f mediatomb-sample.avi ];
