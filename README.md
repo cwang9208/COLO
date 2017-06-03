@@ -87,6 +87,7 @@ hkucs-PowerEdge-R430-2/3:~$ sudo mount 10.22.1.1:/ubuntu /local/ubuntu
   -object filter-redirector,netdev=hn0,id=redire0,queue=rx,indev=compare_out -object filter-redirector,netdev=hn0,id=redire1,queue=rx,outdev=compare0 \
   -object colo-compare,id=comp0,primary_in=compare0-0,secondary_in=compare1,outdev=compare_out0
 ```
+`-S` freezes CPU at startup
 - *Secondary side*
 ```
 # qemu-img create -f qcow2 /local/ubuntu/active_disk.img 8G
