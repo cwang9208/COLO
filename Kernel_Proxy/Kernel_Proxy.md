@@ -131,6 +131,7 @@ colo_script=./scripts/colo-proxy-script.sh,forward_nic=eth1 -device virtio-net-p
 -boot c -drive if=virtio,id=disk1,driver=quorum,read-pattern=fifo,cache=none,aio=native,\
 children.0.file.filename=/mnt/sdb/pure_IMG/redhat/redhat-7.0.img,children.0.driver=raw \
 -vnc :7 -m 2048 -smp 2 -device piix3-usb-uhci -device usb-tablet -monitor stdio -S
+(-S freezes CPU at startup)
 ```
 
 - *Slave side:*
