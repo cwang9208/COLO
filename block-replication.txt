@@ -1,4 +1,12 @@
-== Workflow ==
+== Background == 
+High availability solutions such as micro checkpoint and COLO will do
+consecutive checkpoints. The VM state of the Primary and Secondary VM is
+identical right after a VM checkpoint, but becomes different as the VM
+executes till the next checkpoint. To support disk contents checkpoint,
+the modified disk contents in the Secondary VM must be buffered, and are
+only dropped at next checkpoint time.
+
+== Non-shared disk workflow ==
 The following is the image of block replication workflow:
 
         +----------------------+            +------------------------+
@@ -24,10 +32,8 @@ The following is the image of block replication workflow:
        QEMU.
     2) Before Primary write requests are written to Secondary disk, the
        original sector content will be read from Secondary disk and
-       buffered in the Disk buffer (PVM and SVM execute in parallel and
-       they are not in the same state).
+       buffered in the Disk buffer. (To ensure memory-vcpu / disk state
+       consistency in the secondary VM).
     3) Primary write requests will be written to Secondary disk.
     4) Secondary write requests will be buffered in the Disk buffer and it
        will overwrite the existing sector content in the buffer.
-The sector content in the buffer is dropped by Secondary at next checkpoint
-time, then Primary Disk and Secondary Disk are consistent.
