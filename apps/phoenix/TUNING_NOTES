@@ -1,0 +1,25 @@
+Phoenix Project
+TUNING_NOTES File
+
+This file documents the performance tuning strategies that users could employ
+for their specific environment.
+
+
+1. Application Tunables
+-----------------------
+
+1.1. Data Chunk Size
+
+With the user specified splitter function, the Phoenix library splits the input
+data into multiple chunks, so that a map task operates on a single data chunk 
+at a time. By default each chunk size roughly amounts to L1 cache size (64 KB).
+Generally speaking, increasing the chunk size could enhance performance by
+improving the computation to communication ratio. However, increasing the chunk
+size too much would result in significant load imbalance. 
+
+Users can experiment with varying chunk sizes by exporting the environment 
+variable MR_L1CACHESIZE. In each of the application source code, recommended 
+setting is also denoted in comments.
+
+
+End File
