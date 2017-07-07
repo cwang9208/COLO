@@ -95,3 +95,13 @@ cd ..
 tar zcvf linear_regression_3g.tar.gz linear_regression_datafiles/key_file_3GB.txt
 
 echo "DONE!"
+
+# For each application, we provide MapReduce, sequential, and Pthreads code for comparison purposes.
+
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=524288 ./histogram histogram_datafiles/large.bmp
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=8192 ./kmeans
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=524288 ./linear_regression linear_regression_datafiles/key_file_3GB.txt
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=16777216 ./pca -r 2000 -c 2000 -s 10
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=524288 ./string_match string_match_datafiles/key_file_500MB.txt
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=2097152 ./word_count word_count_datafiles/word_100MB.txt
+# time MR_NUMPROCS=16 MR_NUMTHREADS=16 MR_L1CACHESIZE=8192 ./matrix_multiply 2000 2000 1
