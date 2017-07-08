@@ -2,7 +2,7 @@
 # See slapd.conf(5) for details on configuration options.
 # This file should NOT be world readable.
 #
-include		/home/heming/rcs/smt+mc//xtern//apps/ldap/install/etc/openldap/schema/core.schema
+include		/home/cheng/COLO/apps/ldap/install/etc/openldap/schema/core.schema
 
 # Define global ACLs to disable default read access.
 
@@ -10,11 +10,11 @@ include		/home/heming/rcs/smt+mc//xtern//apps/ldap/install/etc/openldap/schema/c
 # service AND an understanding of referrals.
 #referral	ldap://root.openldap.org
 
-pidfile		/home/heming/rcs/smt+mc//xtern//apps/ldap/install/var/run/slapd.pid
-argsfile	/home/heming/rcs/smt+mc//xtern//apps/ldap/install/var/run/slapd.args
+pidfile		/home/cheng/COLO/apps/ldap/install/var/run/slapd.pid
+argsfile	/home/cheng/COLO/apps/ldap/install/var/run/slapd.args
 
 # Load dynamic backend modules:
-# modulepath	/home/heming/rcs/smt+mc//xtern//apps/ldap/install/libexec/openldap
+# modulepath	/home/cheng/COLO/apps/ldap/install/libexec/openldap
 # moduleload	back_bdb.la
 # moduleload	back_hdb.la
 # moduleload	back_ldap.la
@@ -60,6 +60,6 @@ rootpw		secret
 # The database directory MUST exist prior to running slapd AND 
 # should only be accessible by the slapd and slap tools.
 # Mode 700 recommended.
-directory	/home/heming/rcs/smt+mc//xtern//apps/ldap/install/var/openldap-data
+directory	/home/cheng/COLO/apps/ldap/install/var/openldap-data
 # Indices to maintain
 index	objectClass	eq
