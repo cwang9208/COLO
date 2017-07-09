@@ -73,7 +73,7 @@ This option specifies alternative listener configurations. The default is `ldap:
 ```
         -d <level>
 ```
-This option sets the slapd debug level to \<level\>. Current debugging levels are
+This option sets the slapd debug level to `<level>`. Current debugging levels are
 
 **Level** | **Description**
 ------------ | -------------
