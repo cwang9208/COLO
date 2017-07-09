@@ -24,7 +24,7 @@ Because LDAP is intended to be a global directory service, data is organized hie
 
 At the top level of the hierarchy, entries represent countries or international organizations. Examples of entries are US or Canada (countries) or Ace Industry (an organization). Under each country entry in the hierarchy might be entries for states or provinces or national organizations. The hierarchy might end with entries for people or resources.
 
-![LDAP directory tree](ldap_intro_tree.png)
+![LDAP directory tree](ldap_intro_tree.gif)
 
 Each entry is uniquely identified by a distinguished name. A distinguished name consists of the name of an entry (for example, Barbara Jensen) and a path of names tracing the entry back to the root of the tree.
 
