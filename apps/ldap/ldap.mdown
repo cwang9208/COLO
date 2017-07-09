@@ -1,0 +1,114 @@
+# OpenLDAP
+## Introduction to OpenLDAP Directory Services
+### What is a directory service?
+A directory is a specialized database specifically designed for searching and browsing, in additional to supporting basic lookup and update functions.
+
+### What is LDAP?
+LDAP stands for Lightweight Directory Access Protocol. As the name suggests, it is a lightweight protocol for accessing directory services. LDAP runs over TCP/IP or other connection oriented transfer services.
+
+*What kind of information can be stored in the directory?*
+
+The LDAP information model is based on *entries*.
+
+The entry for Barbara Jensen might have the following attributes:
+```
+cn: Barbara Jensen
+mail: babs@ace.com
+telephoneNumber: 555-1212
+roomNumber: 3995
+```
+
+*How is the information arranged?*
+
+Because LDAP is intended to be a global directory service, data is organized hierarchically, starting at a root and branching down into individual entries. Entries are typically arranged geographically and by organization.
+
+At the top level of the hierarchy, entries represent countries or international organizations. Examples of entries are US or Canada (countries) or Ace Industry (an organization). Under each country entry in the hierarchy might be entries for states or provinces or national organizations. The hierarchy might end with entries for people or resources.
+
+![LDAP directory tree](ldap_intro_tree.png)
+
+Each entry is uniquely identified by a distinguished name. A distinguished name consists of the name of an entry (for example, Barbara Jensen) and a path of names tracing the entry back to the root of the tree.
+
+For example, this might be the distinguished name for the Barbara Jensen entry:
+
+cn=Barbara Jensen, ou=Product Development, o=Ace Industry, c=US
+
+Here, cn represents the common name of the entry, ou represents the organizational unit (such as a department or a division) in which the entry belongs, o represents the organization in which the entry belongs, and c represents the country in which the entry belongs.
+
+The tree may be arranged based upon Internet domain names.
+
+![LDAP directory tree (Internet naming)](ldap_intro_dctree.png)
+
+*How is the information accessed?*
+
+For example, you might want to search the entire directory subtree at and below dc=example,dc=com for people with the name Barbara Jensen, retrieving the email address of each entry found. LDAP lets you do this easily.
+
+## The slapd Configuration File
+### Configuration File Example
+The next section of the configuration file defines a BDB backend that will handle queries for things in the "dc=example,dc=com" portion of the tree.
+```
+#######################################################################
+# BDB database definitions
+#######################################################################
+
+1.    database    bdb
+2.    suffix      "dc=example,dc=com"
+3.    rootdn      "cn=Manager,dc=example,dc=com"
+4.    # Cleartext passwords, especially for the rootdn, should
+5.    # be avoid.  See slappasswd(8) and slapd.conf(5) for details.
+6.    # Use of strong authentication encouraged.
+7.    rootpw      secret
+```
+Lines 3 and 7 identify the database *super-user* entry and associated password. This entry is not subject to access control or size or time limit restrictions.
+
+## Running slapd
+### Command-Line Options
+```
+        -f <filename>
+```
+This option specifies an alternate configuration file for slapd. The default is normally `/usr/local/etc/openldap/slapd.conf`.
+```
+        -h <URLs>
+```
+This option specifies alternative listener configurations. The default is `ldap:///` which implies LDAP over TCP on all interfaces on the default LDAP port 389. You can specify specific host-port pairs or other protocol schemes (such as `ldaps://` or `ldapi://`).
+```
+        -d <level>
+```
+This option sets the slapd debug level to \<level\>. Current debugging levels are
+
+**Level** | **Description**
+------------ | -------------
+256 | stats log connections/operations/results
+
+## A Quick-Start Guide
+**Add initial entries to your directory.**
+
+`ldapmodify` opens a connection to an LDAP server, binds, and modifies or adds entries. The entry information is read from file through the use of the `-f` option.
+```
+-x     Use simple authentication instead of SASL.
+-D binddn
+       Use the Distinguished Name binddn to bind to the LDAP directory.
+
+-w passwd
+       Use passwd as the password for simple authentication.
+```
+Assuming that the file /tmp/entrymods exists and has the contents:
+```
+           dn: cn=Modify Me,dc=example,dc=com
+           changetype: modify
+           replace: mail
+           mail: modme@example.com
+           -
+           add: title
+           title: Grand Poobah
+           -
+           add: jpegPhoto
+           jpegPhoto:< file:///tmp/modme.jpeg
+           -
+           delete: description
+           -
+```
+the command:
+```
+ldapmodify -f /tmp/entrymods
+```
+will replace the contents of the "Modify Me" entry's mail attribute with the value "modme@example.com", add a title of "Grand Poobah", and the contents of the file "/tmp/modme.jpeg" as a jpeg‐Photo, and completely remove the description attribute.
