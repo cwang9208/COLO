@@ -39,3 +39,115 @@ on a different machine from the ftp server (substituting your server's IP addres
 
 Question: What makes a user "virtual", then?<br>
 Answer: A virtual user is, quite simply, a user that is *not* defined in the system `/etc/passwd` file.
+
+Question: If virtual users are not defined in the system `/etc/passwd` file, then where *are* they defined?<br>
+Answer: There are several other locations where user information can be stored, *e.g.* `AuthUserFiles`. Note that virtual users are **not** defined in the `proftpd.conf` file directly.
+
+One of the simplest virtual user authentication mechanisms is the AuthUserFile, which is a flat text file in the same format as the system `/etc/passwd` file.
+
+Once you have created your `AuthUserFile` and `AuthGroupFile` with the `ftpasswd` tool, you configure your `proftpd` to use those files by adding the following directives to your `proftpd.conf`:
+```
+  AuthUserFile /path/to/ftpd.passwd
+  AuthGroupFile /path/to/ftpd.group
+```
+The `ftpasswd` tool is a Perl script, distributed with the ProFTPD source code, under the `contrib/` directory.
+
+**Important**: `proftpd` will use all authentication mechanisms **by default**. This is why a user that does not appear in an `AuthUserFile`, but **is** defined in the system `/etc/passwd file`, can login by default. 
+
+### `DefaultRoot`
+**Restricting Users' Directories**
+
+One of the most common questions for new users of ProFTPD is "How do I restrict my users to only certain directories?" or, phrased another way, "How can I put my users in a chroot jail?" The answer is ProFTPD's `DefaultRoot` configuration directive, which accomplishes this functionality by using the `chroot(2)` function.
+
+### ProFTPD and the ScoreboardFile
+**What is the Scoreboard?**
+
+The `ScoreboardFile` is used by `proftpd` for tracking information for each current FTP session.
+
+**What's in the Scoreboard?**
+
+What types of information about each session is tracked in the scoreboard? What else is recorded in the scoreboard?
+
+The `ScoreboardFile` records the following information about the parent/daemon `proftpd` process:
+- scoreboard file format identifier
+- daemon PID
+- daemon uptime
+- daemon version 
+
+and for each session, the `ScoreboardFile` records:
+- session PID
+- session protocol (*e.g.* "ftp", "ftps", "sftp")
+- session UID
+- session GID
+- session user name
+- session server IP address/port
+- session virtual host name
+- session client IP address, DNS name
+- session class
+- time since session started
+
+### *ProFTPD Logging*
+**Frequently Asked Questions**
+
+Question: I see:
+```
+  wtmp /var/log/wtmp: No such file or directory
+```
+in my logs. What is `WtmpLog` logging? The description in the documentation is quite vague.<br>
+Answer: The `wtmp` logging support is **not** specific to `proftpd`, and instead is a more general Unix facility; this is why the ProFTPD documentation does not cover it in great detail. To learn more about `wtmp` (or any of its other incarnations: `wtmpx`, `utmp`, `utmpx`), please find their related man pages.
+
+### ProFTPD Supported FTP Commands
+Supported FTP Commands
+- STOR
+  Short for **STOR**e, this command is used by the client to tell the the server that the client will be uploading data for a file to stored on the server using the filename given. On many FTP clients, this is implemented using the client-specific "put" command.
+- STOU
+  Short for **STO**re **U**unique, it requests that the file being stored on the server be given a unique filename. The server chooses the unique name for the stored file, and reports the name chosen back to the client.
+
+### Configuring `<Limits>`
+ProFTPD's `<Limit>` configuration sections allow for powerful fine-grained control over who is allowed to use which FTP commands.
+
+** Examples**
+
+Here are examples to help illustrate the use of `<Limit>`. First, a common configuration: an upload-only directory.
+```
+  <Directory /path/to/uploads>
+    <Limit ALL>
+      DenyAll
+    </Limit>
+
+    <Limit CDUP CWD PWD XCWD XCUP>
+      AllowAll
+    </Limit>
+
+    <Limit STOR STOU>
+      AllowAll
+    </Limit>
+  </Directory>
+```
+The first `<Limit ALL>` section blocks use of all FTP commands within the `/path/to/uploads` directory. Having denied use of all commands, we then proceed to define which commands can be used. The `CDUP` and `CWD` commands (and their X variants) should be allowed so that clients can change into and out of the directory. Next, `STOR` and `STOU` are allowed, so that clients can actually upload files into the directory (assuming that the filesystem permissions allow for the client to write files in the directory as well).
+
+### Connection ACLs
+Many sites running `proftpd` have the need to limit/reject connections from known bad addresses, or to accept connections only from known good addresses. ProFTPD supports several different mechanisms for implementing FTP connection ACLs.
+
+**<Limit LOGIN>, and Whitelists versus Blacklists**
+
+The easiest way of accepting/rejecting connections is to use ProFTPD's `<Limit>` syntax, particularly `<Limit LOGIN>`.
+
+For example, you can simply reject all connections to your proftpd instance by using:
+```
+  <Limit LOGIN>
+    DenyAll
+  </Limit>
+```
+A more practical example would look like:
+```
+  <Limit LOGIN>
+    # These are trusted addresses
+    Allow from 1.2.3.4 5.6.7.8
+    Allow from trusted-domain.com
+
+    # Everyone else is denied
+    DenyAll
+  </Limit>
+```
+The above configuration demonstrates the concept of a *whitelist*: known trusted (*i.e.* "white") addresses are explicitly listed and allowed, and all others are denied.
