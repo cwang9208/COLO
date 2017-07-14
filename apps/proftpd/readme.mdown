@@ -1,0 +1,41 @@
+## dkftpbench
+### Introduction
+dkftpbench is an FTP benchmark program inspired by SPECweb99. The result of the benchmark is a number-of-simultaneous-users rating; after running the benchmark properly, you have a good idea how many simultaneous dialup clients a server can support. The target bandwidth per client is set at 28.8 kilobits/second to model dialup users; this is important for servers on the real Internet, which often serve thousands of clients on only 10 MBits/sec of bandwidth.
+
+The final result of the benchmark is "the number of simultaneous 28.8 kilobits/second dialup users". To estimate this number, the benchmark starts up a new simulated user as soon as the last one has finished connecting. It stops increasing the number of users when one fails to connect, fails to maintain the desired bandwidth, or the limit specified by the -n option is reached. It runs the simulated users until the amount of time specified by the -t option has elapsed since the last simulated user birth or death; the final score is the number of users still alive at the end.
+
+### Example
+```
+-hHOSTNAME host name of ftp server
+-P# port number of ftp server
+-n# number of users
+-c# target number of simultaneous connection attempts
+-k# Start next connection when: 1=immediately, 2=after prev connect complete (default 2)
+-t# length of run (in seconds)
+-uUSERNAME user name
+-pPASSWORD user password
+-fFILENAME file to fetch
+-v# set verbosity (0=none, 1=some, 2=lots)
+```
+
+### Reporting Guidelines
+I invite people to run this on their FTP servers and report the results by email. If you want to do this, use the following command to generate test data files:
+```
+make data
+```
+This will generate x10k.dat, x100k.dat, and x1000k.dat. Run the commands
+```
+time dkftpbench -h200.201.202.203 -utestuser -ptestpass -n500 -t600 -fx10k.dat
+```
+and
+```
+time dkftpbench -h200.201.202.203 -utestuser -ptestpass -n500 -t600 -fx1000k.dat
+```
+on a different machine from the ftp server (substituting your server's IP address, username, and password).
+
+## ProFTPD howto
+### ProFTPD Virtual Users
+**Frequently Asked Questions**
+
+Question: What makes a user "virtual", then?<br>
+Answer: A virtual user is, quite simply, a user that is *not* defined in the system `/etc/passwd` file.
