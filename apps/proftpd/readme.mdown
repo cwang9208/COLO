@@ -129,7 +129,7 @@ The first `<Limit ALL>` section blocks use of all FTP commands within the `/path
 ### Connection ACLs
 Many sites running `proftpd` have the need to limit/reject connections from known bad addresses, or to accept connections only from known good addresses. ProFTPD supports several different mechanisms for implementing FTP connection ACLs.
 
-**<Limit LOGIN>, and Whitelists versus Blacklists**
+**`<Limit LOGIN>`, and Whitelists versus Blacklists**
 
 The easiest way of accepting/rejecting connections is to use ProFTPD's `<Limit>` syntax, particularly `<Limit LOGIN>`.
 
@@ -151,3 +151,8 @@ A more practical example would look like:
   </Limit>
 ```
 The above configuration demonstrates the concept of a *whitelist*: known trusted (*i.e.* "white") addresses are explicitly listed and allowed, and all others are denied.
+
+### Configuring ProFTPD
+**Server Identity**
+
+The daemon must be started with root privileges in order to do things like binding to port 21 and chrooting FTP sessions. However, it is not a good idea to leave a long-lived process running as root. The `User` and `Group` configuration directives are thus recommended. These directives configure the identity to which the daemon will switch, after accomplishing its startup tasks. The daemon will switch to the configured `User` and `Group` in the "server config" context.
