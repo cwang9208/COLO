@@ -38,7 +38,9 @@ on a different machine from the ftp server (substituting your server's IP addres
 **Frequently Asked Questions**
 
 Question: What makes a user "virtual", then?<br>
-Answer: A virtual user is, quite simply, a user that is *not* defined in the system `/etc/passwd` file.
+Answer: A virtual user is, quite simply, a user that is *not* defined in the system `/etc/passwd` file. This file associates a user name, given by the system administrator, to a user ID (commonly shortened to UID) and a group ID (GID), among other details.
+
+By default, `ls` lists the names of file owners by looking up those names in `/etc/passwd`. This is why listing files of virtual users will often show incorrect names; `ls` has no knowledge of virtual user names. When working with files created by virtual users, use `ls -n` so that you can see the IDs, not the names, associated with those files. 
 
 Question: If virtual users are not defined in the system `/etc/passwd` file, then where *are* they defined?<br>
 Answer: There are several other locations where user information can be stored, *e.g.* `AuthUserFiles`. Note that virtual users are **not** defined in the `proftpd.conf` file directly.

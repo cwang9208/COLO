@@ -101,12 +101,10 @@ echo "ThreadsPerChild 8" >> httpd.conf
 cp $COLO/apps/apache/test.php $COLO/apps/apache/install/htdocs/
 cp $COLO/apps/apache/test.php ~/
 
-# AddType directive controls what Internet media types are sent to the client for given file
-# extension(s). Sending the correct media type to the client is important so they know how to
-# handle the content of the file.
-
 # add php filter.
 sed -e "s/#AddType text\/html \.shtml/AddType application\/x-httpd-php \.php/g" httpd.conf > httpd.conf.tmp
+# Any time the server encounters requests for .php files, it will pass them through the PHP processor
+# and return the processor's output to the requesting client.
 mv httpd.conf.tmp httpd.conf
 
 
