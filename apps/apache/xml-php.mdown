@@ -1,0 +1,137 @@
+## XML
+### XML Extensions in PHP 5
+This chapter starts by introducing DOM and SimpleXML, the two major XML extensions in PHP 5. This introduction shows how to create, save and interact with DOM and SimpleXML objects. These tow approaches to working with XML are similar, but they have different aims. DOM is rigorous and works with any XML, whereas SimpleXML aims to make common XML tasks very easy, at the cost of not being useful for some types of XML.
+
+To make things consistent, the examples all use the same XML documents. These documents represent a basic XML address book.
+
+```XML
+<?xml version="1.0"?>
+<address-book>
+    <person id="1">
+        <!--Rasmus Lerdorf-->
+        <firstname>Rasmus</firstname>
+        <lastname>Lerdorf</lastname>
+        <city>Sunnyvale</city>
+        <state>CA</state>
+        <email>rasmus@php.net</email>
+    </person>
+    <person id="2">
+        <!--Zeev Suraski-->
+        <firstname>Zeev</firstname>
+        <lastname>Suraski</lastname>
+        <city>Tel Aviv</city>
+        <state></state>
+        <email>zeev@php.net</email>
+    </person>
+</address-book>
+```
+
+### DOM
+#### About DOM
+DOM, short for Document Object Model, is a W3C standard describing a platform- and language-neutral interface for interacting with XML and other structured documents. DOM then provides a series of utility functions to recurse through the branches and pick put the nodes and data you want.
+
+#### Turning XML Documents into DOM objects
+Before you can do anything DOM-related in PHP 5, you need to create a new instance of the DOM object, called `DOMDocument`:
+```
+$dom = new DOMDocument;
+```
+Now you can load XML into `$dom`. DOM differentiates between XML stored as a string and XML stored in a file. To read from a string, call `loadXML()`; to read from a file, call `load()`:
+```
+$dom = new DOMDocument;
+
+// read from a string
+$dom->loadXML('<string>I am XML</string>');
+
+// read from a file
+$dom->load('address-book.xml');
+```
+#### DOM Nodes
+![A DOM representation of an XML address book](xml-dom.png)
+
+##### Accessing the root element
+The root element of an XML document is stored as the `documentElement` property of a DOM object:
+```
+$dom = new DOMDocument;
+$dom = preserveWhiteSpace = false;
+$dom = load('address-book.xml');
+
+$root = $dom->documentElement;
+```
+The `$root` variable now holds a pointer to the document root.
+
+##### Navigating through nodes
+The easiest way to process all of a node's children is with a `foreach` upon its `childNodes`. For example, to process all the `person` elements in the address book:
+```
+$dom = new DOMDocument;
+$dom = preserveWhiteSpace = false;
+$dom = load('address-book.xml');
+
+$root = $dom->documentElement;
+
+foreach($root->childNodes as $person) {
+    process($person)
+}
+```
+##### Determining node types
+`libxml2` has 21 different types of nodes. The most frequently encountered types are elements, attributes, and text. The `nodeType` method returns a number describing the node.
+
+##### Accessing element nodes
+DOM stores an element's name in the `tagName` property. This code loops through a `person` element from the address book and prints out the names of all the elements and the value of their first children:
+```
+$dom = new DOMDocument;
+$dom = preserveWhiteSpace = false;
+$dom = load('address-book.xml');
+
+$person = $dom->documentElement->firstChild;
+
+foreach ($person->childNodes as $field) {
+	if ($field->nodeType == 1) {
+	    print "$field->tagName: {$field->firstChild->nodeValue}\n";
+	}
+}
+```
+
+```
+firstname: Rasmus
+lastname: Lerdorf
+city: Sunnyvale
+state: CA
+email: rasmus@php.net
+```
+
+### SimpleXML
+#### Turning XML Documents into SimpleXML Objects
+
+There are two ways to read XML under SimpleXML. If your XML document is stored as a string in a PHP variable, use `simplexml_load_string()`. If it's in a file, call `simplexml_load_file()` instead. For instance:
+```
+// Variable
+$xml = simplexml_load_string('<xml>I am XML</xml>');
+
+// Local file
+$people = simplexml_load_file('address-book.xml');
+```
+
+#### SimpleXML Elements
+![A SimpleXML representation of an XML address book](xml-simplexml.png)
+
+To access a single value value, reference it directly using object method notation. Here's the same snippet form the DOM section:
+```
+<firstname>Rasmus</firstname>
+```
+If you have this in a SimpleXML object, `$firstname`, here's all you need to do to access `Rasmus`:
+```
+$firstname
+```
+SimpleXML assumes that you when you have a node that contains only text, you're interested in the text. Therefore, `print $firstname` does what you expect it to: it prints `Rasmus`.
+
+Unlike DOM, attributes are not stored as separate nodes. Instead, attributes are stored as array elements. For example, this prints out `id` attribute for the first `person` element:
+```
+$ab = simplexml_load_file('address-book.xml');
+
+// the id attribute of the first person
+print $ab->person['id'] . "\n";
+```
+which gives you:
+```
+1
+```
