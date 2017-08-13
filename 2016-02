@@ -1,0 +1,147 @@
+On 2016/2/27 0:36, Dr. David Alan Gilbert wrote:
+> * Dr. David Alan Gilbert (dgilbert@redhat.com) wrote:
+>> * zhanghailiang (zhang.zhanghailiang@huawei.com) wrote:
+>>> From: root <root@localhost.localdomain>
+>>>
+>>> This is the 15th version of COLO (Still only support periodic checkpoint).
+>>>
+>>> Here is only COLO frame part, you can get the whole codes from github:
+>>> https://github.com/coloft/qemu/commits/colo-v2.6-periodic-mode
+>>>
+>>> There are little changes for this series except the network releated part.
+>>
+>> I was looking at the time the guest is paused during COLO and
+>> was surprised to find one of the larger chunks was the time to reset
+>> the guest before loading each checkpoint;  I've traced it part way, the
+>> biggest contributors for my test VM seem to be:
+>>
+>>    3.8ms  pcibus_reset: VGA
+>>    1.8ms  pcibus_reset: virtio-net-pci
+>>    1.5ms  pcibus_reset: virtio-blk-pci
+>>    1.5ms  qemu_devices_reset: piix4_reset
+>>    1.1ms  pcibus_reset: piix3-ide
+>>    1.1ms  pcibus_reset: virtio-rng-pci
+>>
+>> I've not looked deeper yet, but some of these are very silly;
+>> I'm running with -nographic so why it's taking 3.8ms to reset VGA is
+>> going to be interesting.
+>> Also, my only block device is the virtio-blk, so while I understand the
+>> standard PC machine has the IDE controller, why it takes it over a ms
+>> to reset an unused device.
+>
+> OK, so I've dug a bit deeper, and it appears that it's the changes in
+> PCI bars that actually take the time;  every time we do a reset we
+> reset all the BARs, this causes it to do a pci_update_mappings and
+> end up doing a memory_region_del_subregion.
+> Then we load the config space of the PCI device as we do the vmstate_load,
+> and this recreates all the mappings again.
+>
+> I'm not sure what the fix is, but that sounds like it would
+> speed up the checkpoints usefully if we can avoid the map/remap when
+> they're the same.
+>
+
+Interesting, and thanks for your report.
+
+We already known qemu_system_reset() is a time-consuming function, we shouldn't
+call it here, but if we didn't do that, there will be a bug, which we have
+reported before in the previous COLO series, the bellow is the copy of the related
+patch comment:
+
+     COLO VMstate: Load VM state into qsb before restore it
+
+     We should not destroy the state of secondary until we receive the whole
+     state from the primary, in case the primary fails in the middle of sending
+     the state, so, here we cache the device state in Secondary before restore it.
+
+     Besides, we should call qemu_system_reset() before load VM state,
+     which can ensure the data is intact.
+     Note: If we discard qemu_system_reset(), there will be some odd error,
+     For exmple, qemu in slave side crashes and reports:
+
+     KVM: entry failed, hardware error 0x7
+     EAX=00000000 EBX=0000e000 ECX=00009578 EDX=0000434f
+     ESI=0000fc10 EDI=0000434f EBP=00000000 ESP=00001fca
+     EIP=00009594 EFL=00010246 [---Z-P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+     ES =0040 00000400 0000ffff 00009300
+     CS =f000 000f0000 0000ffff 00009b00
+     SS =434f 000434f0 0000ffff 00009300
+     DS =434f 000434f0 0000ffff 00009300
+     FS =0000 00000000 0000ffff 00009300
+     GS =0000 00000000 0000ffff 00009300
+     LDT=0000 00000000 0000ffff 00008200
+     TR =0000 00000000 0000ffff 00008b00
+     GDT=     0002dcc8 00000047
+     IDT=     00000000 0000ffff
+     CR0=00000010 CR2=ffffffff CR3=00000000 CR4=00000000
+     DR0=0000000000000000 DR1=0000000000000000 DR2=0000000000000000 DR3=0000000000000000
+     DR6=00000000ffff0ff0 DR7=0000000000000400
+     EFER=0000000000000000
+     Code=c0 74 0f 66 b9 78 95 00 00 66 31 d2 66 31 c0 e9 47 e0 fb 90 <f3> 90 fa fc 66 c3 66 53 66 89 c3
+     ERROR: invalid runstate transition: 'internal-error' -> 'colo'
+
+     The reason is, some of the device state will be ignored when saving device state to slave,
+     if the corresponding data is in its initial value, such as 0.
+     But the device state in slave maybe in initialized value, after a loop of checkpoint,
+     there will be inconsistent for the value of device state.
+     This will happen when the PVM reboot or SVM run ahead of PVM in the startup process.
+     Signed-off-by: zhanghailiang <zhang.zhanghailiang@huawei.com>
+     Signed-off-by: Yang Hongyang <yanghy@cn.fujitsu.com>
+     Signed-off-by: Gonglei <arei.gonglei@huawei.com>
+     Reviewed-by: Dr. David Alan Gilbert <dgilbert@redhat.com
+
+As described above, some values of the device state are zero, they will be
+ignored during  migration, it has no problem for normal migration, because
+for the VM in destination, the initial values will be zero too. But for COLO,
+there are more than one round of migration, the related values may be changed
+from no-zero to zero, they will be ignored too in the next checkpoint, the
+VMstate will be inconsistent for SVM.
+
+The above error is caused directly by wrong value of 'async_pf_en_msr'.
+
+static const VMStateDescription vmstate_async_pf_msr = {
+     .name = "cpu/async_pf_msr",
+     .version_id = 1,
+     .minimum_version_id = 1,
+     .needed = async_pf_msr_needed,
+     .fields = (VMStateField[]) {
+         VMSTATE_UINT64(env.async_pf_en_msr, X86CPU),
+         VMSTATE_END_OF_LIST()
+     }
+};
+
+static bool async_pf_msr_needed(void *opaque)
+{
+     X86CPU *cpu = opaque;
+
+     return cpu->env.async_pf_en_msr != 0;
+}
+
+Some other VMstate of registers in CPUX86State have the same problem,
+we can't make sure they won't cause any problems if the values of them
+are incorrect.
+So here, we just simply call qemu_system_reset() to avoid the inconsistent
+problem.
+Besides, compared with the most time-consuming operation (ram flushed from
+COLO cache to SVM). The time consuming for qemu_system_reset() seems to be
+acceptable ;)
+
+Another choice to fix the problem is to save the VMstate ignoring the needed()
+return value, but this method is not so graceful.
+diff --git a/migration/vmstate.c b/migration/vmstate.c
+index e5388f0..7d15bba 100644
+--- a/migration/vmstate.c
++++ b/migration/vmstate.c
+@@ -409,7 +409,7 @@ static void vmstate_subsection_save(QEMUFile *f, const VMStateDescription *vmsd,
+      bool subsection_found = false;
+
+      while (sub && sub->needed) {
+-        if (sub->needed(opaque)) {
++        if (sub->needed(opaque) || migrate_in_colo_state()) {
+              const VMStateDescription *vmsd = sub->vmsd;
+              uint8_t len;
+
+
+Thanks,
+Hailiang
+
