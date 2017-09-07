@@ -3,6 +3,7 @@ File postgresql.conf is read on server startup and when the server receives a SI
 ```
 listen_addresses = 'localhost'		# what IP address(es) to listen on;
 					# defaults to 'localhost'; use '*' for all
+max_connections = 100
 ```
 
 ### Client Authentication
