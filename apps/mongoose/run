@@ -26,8 +26,9 @@ killall -9 mg-server &> /dev/null
 FILE="llvm-gcc-4.2-2.7.source.tgz"
 APP=$COLO/apps/mongoose/mg-server
 # OPTIONS:
-#   -t num_threads (default: "20")
 #   -k enable_keep_alive (default: "no")
+# Keep alive now works only for static files and directory listnings.
+# For CGI and user callbacks, connections are always closed.
 INPUT="-t 2"
 
 # Start the server.
