@@ -49,11 +49,11 @@ iface eth0 inet static
 
 # set up apt-get to use a http-proxy
 # vi /etc/apt/apt.conf
-Acquire::http::Proxy "http://10.22.1.1:3128";
+Acquire::http::Proxy "http://yourproxyaddress:proxyport";
 
 # if you would like apt-get and other applications for instance wget, to use a http-proxy.
 # Add these lines to the bottom of your ~/.bashrc file
-http_proxy=http://10.22.1.1:3128
+http_proxy=http://yourproxyaddress:proxyport
 export http_proxy
 
 # Save the file. Source the ~/.bashrc file:

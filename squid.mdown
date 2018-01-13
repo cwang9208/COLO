@@ -1,0 +1,22 @@
+# Squid normally listens to port 3128
+http_port 3128
+
+#  TAG: access_log
+#
+#	Default:
+#		access_log daemon:/var/log/squid3/access.log squid
+
+#  TAG: acl
+#	Defining an Access List
+#
+#	Every access list definition must begin with an aclname and acltype, 
+#	followed by either type-specific arguments or a quoted filename that
+#	they are read from.
+
+#acl all src 0.0.0.0/0.0.0.0
+
+#  TAG: http_access
+#	Allowing or Denying access based on defined access lists
+#
+#	Access to the HTTP port:
+#	http_access allow|deny [!]aclname ...
