@@ -9,4 +9,4 @@ cd $COLO/apps/mediatomb
 
 3. Start server and client.
 
-The conf file of this server is MSMR_ROOT/apps/mediatomb/.mediatomb/config.xml.
+The conf file of this server is COLO/apps/mediatomb/.mediatomb/config.xml.
