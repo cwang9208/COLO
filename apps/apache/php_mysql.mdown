@@ -13,5 +13,39 @@
 4. PHP is a module that resides within the Web server. The server opens the file (script) and reads it line by line. It hands over any PHP instructions to the PHP module for processing and replaces the PHP code with the output it generated back into the page. Because this processing is done first, PHP is called a hypertext preprocessor. Once the PHP instructions have been processed, the page that travels across the network back to the user's browser consists of just plain HTML and text.
 5. If the Web page consists of PHP with MySQL (or nay other database) statements, then PHP may make further requests to the database to retrieve, send, or update information on the fly.
 
+> ```
+> # This simple example shows how to connect, execute a query, print resulting rows and disconnect
+> # from a MySQL database.
+> 
+> # <?php
+> # // Connecting, selecting database
+> # $link = mysql_connect('mysql_host', 'mysql_user', 'mysql_password')
+> #     or die('Could not connect: ' . mysql_error());
+> # echo 'Connected successfully';
+> # mysql_select_db('my_database') or die('Could not select database');
+>
+> # // Performing SQL query
+> # $query = 'SELECT * FROM my_table';
+> # $result = mysql_query($query) or die('Query failed: ' . mysql_error());
+> 
+> # // Printing results in HTML
+> # echo "<table>\n";
+> # while ($line = mysql_fetch_array($result, MYSQL_ASSOC)) {
+> #     echo "\t<tr>\n";
+> #     foreach ($line as $col_value) {
+> #         echo "\t\t<td>$col_value</td>\n";
+> #     }
+> #     echo "\t</tr>\n";
+> # }
+> # echo "</table>\n";
+> 
+> # // Free resultset
+> # mysql_free_result($result);
+> 
+> # // Closing connection
+> # mysql_close($link);
+> # ?>
+> ```
+
 ### The Anatomy of a PHP Script
 A PHP script is a file (ending with a `.php` extension) consisting of text, HTML, and PHP instructions interspersed throughput the file. The PHP instructions are contained within two HTML style tags; `<?php` is the opening tag and `?>` is the closing tag. Everything between these two tags is interpreted by the PHP module (also called interpreter) and converted to regular text and HTML before being sent back to the requesting browser. If, for example, one of the PHP instructions is to get today's date from the server, PHP will get the date and replace the PHP instruction with the current date. When the browser gets the file, it will not see the PHP tags or any of the PHP instructions; it will get only what PHP generated as a result of its processing.
